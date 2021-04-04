@@ -1,4 +1,4 @@
-package application;
+package userInterface;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,10 +25,17 @@ public class MainPage {
 	private Button leftButton = new Button("Left Btn");
 	private Button rightButton = new Button("Right Btn");
 	private Label bottomText = new Label("Bottom text");
-
+	private static TextArea inputZone = new TextArea();
 	
-	private TextArea inputZone = new TextArea();
+	public static Stage mainStage;
 	
+	public static String getInputZoneText() {
+		return inputZone.getText();
+	}
+	
+	public static void setInputZoneText(String text) {
+		inputZone.setText(text);
+	}
 	
 	public void auxiliaryObjectsProperties(Button leftBtn, Button rightBtn,Label bottomText) {
 		leftBtn.setVisible(false);
@@ -41,6 +48,8 @@ public class MainPage {
 	
 	public Scene showMainPage(Stage primaryStage, double windowWidth, double windowHeight) {
 			
+		
+		mainStage = primaryStage; // am nevoie sa il pasez ca argument pentru FileChooser
 		
 		//StackPane root = new StackPane();
 		BorderPane root = new BorderPane();
@@ -57,27 +66,16 @@ public class MainPage {
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
 		
 		
-		
-		
-		
-			
-		
+	
 		
 		inputZone.setId("inputZone");
 		inputZone.setFocusTraversable(false);
 		
 		 
-		
-		
-		
-		
 	
 		inputZone.setOnMouseClicked(e->{
 			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY());
 		});
-		
-		
-		
 		
 		
 
@@ -86,4 +84,6 @@ public class MainPage {
 		//root.getChildren().add(menuBar);
 		return a;
 		}
+	
+		
 }

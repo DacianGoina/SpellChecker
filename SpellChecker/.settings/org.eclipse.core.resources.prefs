@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
-encoding//src/application/MainPage.java=UTF-8
-encoding//src/application/MenuBarFactory.java=UTF-8
-encoding//src/application/OpenApp.java=UTF-8
+encoding//src/userInterface/MainPage.java=UTF-8
+encoding//src/userInterface/MenuBarFactory.java=UTF-8
+encoding//src/userInterface/OpenApp.java=UTF-8

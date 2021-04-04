@@ -1,6 +1,5 @@
-package application;
+package userInterface;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +38,19 @@ public class MenuBarFactory {
 		// Doar pentru a testa chestii momentan
 		
 		
+		// Import .txt
 		fileItem1.setOnAction(e->{
+			MenuBarEvents.importTXTFile(MainPage.mainStage);
+		});
+		
+		
+		
+		// Export ca .txt
+		fileItem3.setOnAction(e->{
+			MenuBarEvents.exportTXTFile(MainPage.mainStage);
+		});
+		
+		/*fileItem1.setOnAction(e->{
 			List<String> a = new LinkedList<>();
 			a.add("cuvant 1");
 			a.add("cuvant 2");
@@ -55,7 +66,7 @@ public class MenuBarFactory {
 			});
 			
 			
-		});
+		});*/
 		
 		fileItem2.setOnAction(e->{
 			List<String> a = new LinkedList<>();
@@ -82,6 +93,12 @@ public class MenuBarFactory {
 		
 		MenuItem optionsItem1 = new MenuItem("Golire zona text");
 		options.getItems().add(optionsItem1);
+		
+		// Cand dai click pe "Golire zona text"
+		optionsItem1.setOnAction(e->{
+			MenuBarEvents.clearInputZone();
+		});
+		
 		
 		menuBar.getMenus().add(options);
 		

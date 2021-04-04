@@ -1,4 +1,4 @@
-package application;
+package userInterface;
 
 
 /**
@@ -16,6 +16,7 @@ public class RightClickMenu {
 	
 	// folosesc obiecte statice pentru a nu crea obiecte noi la fiecare click dreapta
 	
+	// se va modifica vizibilitate ulterior - am folosit public doar pt teste
 	private static ContextMenu contextMenu = new ContextMenu();
 	public static MenuItem ignore = new MenuItem("Ignora");
 	private static MenuItem addToDict = new MenuItem("Adauga in dictionar");
