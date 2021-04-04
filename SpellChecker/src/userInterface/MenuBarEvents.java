@@ -16,6 +16,12 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.control.Alert.AlertType;
 
+
+/**
+ * 
+ * @author Dacian
+ *
+ */
 public class MenuBarEvents {
 
 	// dimensiunea maxima a unui fisier a carui text poate fi adus in aplicatie

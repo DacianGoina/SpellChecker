@@ -11,6 +11,12 @@ import javafx.scene.control.Alert.AlertType;
 // aceasta clasa va crea obiecte de tip Alert - acele ferestre in care trebuie sa confirmi ("Da" / "Nu") inainte de o actiune
 // OBS: daca se foloseste optiunea acceptButton.setDefaultButton(false); atunci nu vei mai putea "apasa" butonul folosind ENTER
 // totusi daca se pune optiunea respectiva pe true atunci se va schimba putin aspectul butonului, va avea si o nuanta de albastru peste
+
+/**
+ * 
+ * @author Dacian
+ *
+ */
 public class AlertDialogFactory {
 
 	/**
