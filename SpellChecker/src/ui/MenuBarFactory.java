@@ -1,4 +1,4 @@
-package userInterface;
+package ui;
 
 import java.util.LinkedList;
 import java.util.List;

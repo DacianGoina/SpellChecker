@@ -1,4 +1,4 @@
-package userInterface;
+package ui;
 
 import javafx.stage.Stage;
 /**
