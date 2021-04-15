@@ -4,7 +4,11 @@ package ui;
 /**
  * 
  * @author Dacian
- * Clasa se va folosi pentru a controla meniul care apare cand se apasa click dreapta pe un cuvant
+ * RightClickMenu
+ * Clasa crează obiecte de tip ContextMenu, aceste meniuri (este afișat doar un meniu la un moment dat) se vor afișa la inspectarea unui cuvânt.
+ * De ex. dacă un cuvânt este marcat ca fiind greșit iar utilizatorul selectează (click dreapta) cuvântul atunci va fi afișat un meniu
+ * care va conține mai multe acțiuni care se vor putea efectua asupra acelui cuvânt, 
+ * de ex. opțiunea de adăugare cuvânt în dicționar, sau o listă cu câteva cuvinte apropiate de cuvântul inițial - selectând un cuvânt din această listă putem înlocui (corecta) cuvântul pe care am făcut click
  */
 import java.util.List;
 

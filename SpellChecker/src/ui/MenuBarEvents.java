@@ -32,7 +32,12 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * 
  * @author Dacian
- *
+ * <p>MenuBarEvents
+ * Clasă care implementează funcționalități pentru bara de meniu: 
+ * mai exact funcții care sunt apelate în momentul în care utilizatorul interacționează cu submeniurile
+ * Practic, apăsarea unei opțiuni din meniu (a unui submeniu) declanșează un mouse event iar efectul acestuia este executarea metodelor din această clasă.
+ * De ex. dacă utilizatorul selectează opțiunea "Import .txt" atunci se va apela metoda importTXTFile 
+ * care îi permite utilizatorul să aducă conținutul unui fișier .txt în aplicație pentru a face prelucrări (corectare) pe acel text
  */
 public class MenuBarEvents {
 	

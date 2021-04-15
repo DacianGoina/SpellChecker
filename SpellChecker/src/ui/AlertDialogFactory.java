@@ -15,8 +15,18 @@ import javafx.scene.control.Alert.AlertType;
 /**
  * 
  * @author Dacian
- *
+ * <p> AlertDialogFactory
+ * Această clasă conține metode care generează obiect de tip Alert și InputTextDialog.
+ * Practic, când utilizatorul interacționează cu aplicația aceasta afișează diverse mesaje (Alert) pentru a comunica cu utilizatorul.
+ * De ex. dacă utilizatorul dorește să încarce text dintr-un fișier pentru care nu are opțiunea de citire permisă atunci 
+ * aplicația îl va informa că nu poate citi acel fișier. 
+ * Informarea utilizatorul se va realiza prin obiecte de tip Alert (din JavaFx), astfel se folosește această clasă pentru a crea
+ * obiecte Alert cu proprietăți custom - de exemplu titlul mesajului, conținutul mesajului
+ * 
  */
+
+
+
 public class AlertDialogFactory {
 
 	/**

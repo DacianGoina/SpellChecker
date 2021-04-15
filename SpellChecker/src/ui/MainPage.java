@@ -4,7 +4,8 @@ package ui;
 /**
  * 
  * @author Dacian
- *
+ *<p> MainPage
+ * Clasă folosită pentru interfața grafică - conține (construiește) elementele grafice (meniu, butoane, zonă text) prin care utilizatorul va putea interacționa cu aplicația.
  */
 
 
@@ -118,7 +119,7 @@ public class MainPage {
 		root.setCenter(inputZone);
 		root.setRight(rightButton);
 		root.setLeft(leftButton);
-		root.setTop(MenuBarFactory.getMenuBar());
+		root.setTop(MenuBarInitializer.getMenuBar());
 		
 		
 		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, paraInfo);

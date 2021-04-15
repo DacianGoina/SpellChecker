@@ -14,9 +14,12 @@ import javafx.scene.control.MenuItem;
 /**
  * 
  * @author Dacian
+ * <p> MenuBarInitializer
+ * Clasa care contruiește bara de meniu a aplicației. 
+ * Bara de meniu conține mai multe submeniuri care oferă diverse acțiuni, de ex. importare text, exportare text etc
  *
  */
-public class MenuBarFactory {
+public class MenuBarInitializer {
 	
 	// Meniu pentru aplicatie - optiunile de sus
 	public static MenuBar getMenuBar() {

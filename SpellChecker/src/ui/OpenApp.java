@@ -3,7 +3,10 @@ package ui;
 import javafx.stage.Stage;
 /**
  * @author Dacian
- * <p> OpenApp - launch application
+ * <p> OpenApp
+ * Clasa folosita pentru configura proprietatile ecranului care va fi afisat. 
+ * Nu configureaza efectiv interfata grafica (butoane, text,etc) ci proprietatile ferestrei - titlu, dimensiune, etc
+ * La final lanseaza interfata grafica efectiva
  */
 
 public class OpenApp {
