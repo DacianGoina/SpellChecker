@@ -10,7 +10,7 @@ import javafx.stage.Stage;
  * @author Dacian
  * <p> Main
  * Clasa principala a interfetei grafice. Este generata automat la crearea proiectului, practic este root-ul interfetei grafice
- * Foloseste un obiect OpenApp pentru a configura proprietatile ecranului care va afisa interfata grafica efectiva.
+ * Foloseste un obiect OpenApp pentru a configura proprietatile ecranului care va afisa interfata grafica efectiva
  */
 
 public class Main extends Application {
