@@ -10,13 +10,15 @@ import javafx.stage.Stage;
  */
 
 public class OpenApp {
+	private Command cmd;
 	private double windowHeight;
 	private double windowWidth;
 
-	public OpenApp(double windowWidth, double windowHeight) {
+	public OpenApp(Command cmd, double windowWidth, double windowHeight) {
 		super();
 		this.windowHeight = windowHeight;
 		this.windowWidth = windowWidth;
+		this.cmd = cmd;
 	}
 
 	public double getWindowHeight() {
@@ -36,12 +38,17 @@ public class OpenApp {
 	
 	
 	public void openWindow(Stage primaryStage) {
+		
+			final MainPage page = new MainPage(this.cmd);
+			cmd.setMainPage(page);
+		
 			try {
 				//primaryStage.setResizable(false);
 				primaryStage.setTitle("SpellChecker");
 				primaryStage.setWidth(windowWidth);
 				primaryStage.setHeight(windowHeight);
-				primaryStage.setScene((new MainPage()).showMainPage(primaryStage,windowWidth, windowHeight));
+				//primaryStage.setScene((new MainPage()).showMainPage(primaryStage,windowWidth, windowHeight));
+				primaryStage.setScene(page.showMainPage(primaryStage, windowWidth, windowHeight));
 				primaryStage.setMinWidth(650);
 				primaryStage.setMinHeight(500);
 				primaryStage.show();

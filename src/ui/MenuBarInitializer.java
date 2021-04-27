@@ -22,8 +22,14 @@ import javafx.scene.control.MenuItem;
 public class MenuBarInitializer {
 	
 	// Meniu pentru aplicatie - optiunile de sus
-	public static MenuBar getMenuBar() {
+	
+	
+	
+	public static MenuBar getMenuBar(final MainPage page) {
 		MenuBar menuBar = new MenuBar();
+		
+		
+		final MenuBarEvents events = new MenuBarEvents(page);
 		
 		// Meniul 1 - Fisier
 		Menu file = new Menu("Fișier");
@@ -56,23 +62,23 @@ public class MenuBarInitializer {
 		
 		// Import .txt
 		importTXT.setOnAction(e->{
-			MenuBarEvents.importTXTFile(MainPage.mainStage);
+			events.importTXTFile(page.mainStage);
 		});
 		
 		
 		// Import .docx
 		importDOCX.setOnAction(e->{
-			MenuBarEvents.importDOCXFile(MainPage.mainStage);
+			events.importDOCXFile(page.mainStage);
 		});
 		
 		// Import .xlsx
 		importXLSX.setOnAction(e->{
-			MenuBarEvents.importXLSXFile(MainPage.mainStage);
+			events.importXLSXFile(page.mainStage);
 		});
 		
 		// Export ca .txt
 		exportTXT.setOnAction(e->{
-			MenuBarEvents.exportTXTFile(MainPage.mainStage);
+			events.exportTXTFile(page.mainStage);
 		});
 		
 		
@@ -110,7 +116,7 @@ public class MenuBarInitializer {
 		
 		// Cand dai click pe "Golire zona text"
 		optionsItem1.setOnAction(e->{
-			MenuBarEvents.clearInputZone();
+			events.clearInputZone();
 		});
 		
 		

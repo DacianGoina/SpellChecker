@@ -14,10 +14,13 @@ import javafx.stage.Stage;
  */
 
 public class Main extends Application {
+	
+	protected final Command cmd = new Command();
+	
 	@Override
 	public void start(Stage primaryStage) {
 		
-		OpenApp A = new OpenApp(800,600);
+		OpenApp A = new OpenApp(cmd, 800, 600);
 		A.openWindow(primaryStage);
 		
 		

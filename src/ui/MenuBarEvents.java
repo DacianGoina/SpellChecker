@@ -41,8 +41,6 @@ import javafx.scene.control.Alert.AlertType;
  */
 public class MenuBarEvents {
 	
-	
-	
 	//protected final MainPage page;
 	protected MainPage page;
 	public MenuBarEvents(final MainPage page) {
@@ -64,13 +62,13 @@ public class MenuBarEvents {
 	public final static int FILE_MAX_SIZE = 65535;
 
 	// Golire zona text
-	public final static void clearInputZone() {
+	public final void clearInputZone() {
 
-		String inputZoneText = MainPage.getInputZoneText();
+		String inputZoneText = page.getInputZoneText();
 
 		if (inputZoneText.trim().replaceAll("\\s", "").length() == 0) // in cazul in care sunt doar spatii albe nu mai
 																		// intreb daca vrei sa stergi
-			MainPage.setInputZoneText("");
+			page.setInputZoneText("");
 
 		else {
 
@@ -80,7 +78,7 @@ public class MenuBarEvents {
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.YES) { // actiunea care are loc cand apesi butonul "Da" din mesaj(alert)
 				System.out.println("OK");
-				MainPage.setInputZoneText("");
+				page.setInputZoneText("");
 			}
 
 		}
@@ -88,18 +86,18 @@ public class MenuBarEvents {
 	}
 
 	// Importare continut din document .txt
-	public final static void importTXTFile(Stage mainStage) {
+	public final void importTXTFile(Stage mainStage) {
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Selectare fisier");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text file (.txt)", "*.txt*"));
-
-		String inputZoneText = MainPage.getInputZoneText();
+		
+		String inputZoneText = page.getInputZoneText();
 		if (inputZoneText.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii atunci se
 																		// poate inlocui textul direct
 
 			File file = fileChooser.showOpenDialog(mainStage);
-			MenuBarEvents.readTXTFile(file);
+			readTXTFile(file);
 		}
 
 		else { // in cazul in care exista deja text in TextArea vei fi avertizat ca acesta va
@@ -112,7 +110,7 @@ public class MenuBarEvents {
 			if (result.get() == ButtonType.YES) {
 				System.out.println("OK");
 				File file = fileChooser.showOpenDialog(mainStage);
-				MenuBarEvents.readTXTFile(file);
+				readTXTFile(file);
 			}
 		}
 	}
@@ -121,7 +119,7 @@ public class MenuBarEvents {
 	// continutul, apoi il pune in zona de text
 	// Se foloseste metoda separata de importTXT pentru a face refolosi codul
 	// in importTXT aceasta metoda se apeleaza de doua ori
-	public static void readTXTFile(File file) {
+	public  void readTXTFile(File file) {
 		if (file != null) {
 
 			System.out.println("Ai selectat: " + file.getName());
@@ -154,7 +152,7 @@ public class MenuBarEvents {
 					}
 					
 					
-					MainPage.setInputZoneText(sb.toString()); // setare text
+					page.setInputZoneText(sb.toString()); // setare text
 					
 					
 				} catch (IOException e) {
@@ -174,8 +172,8 @@ public class MenuBarEvents {
 		}
 	}
 
-	public static void exportTXTFile(Stage mainStage) {
-		String fileContent = MainPage.getInputZoneText();
+	public void exportTXTFile(Stage mainStage) {
+		String fileContent = page.getInputZoneText();
 
 		if (fileContent.trim().replace("\\s", "").length() == 0) {
 			// sunt doar spatii libere in TextArea si nu merita sa salvezi
@@ -261,18 +259,18 @@ public class MenuBarEvents {
 	}
 	
 	
-	public final static void importDOCXFile(Stage mainStage) {
+	public final void importDOCXFile(Stage mainStage) {
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Selectare fisier");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Word file (.docx)", "*.docx*"));
 
-		String inputZoneText = MainPage.getInputZoneText();
+		String inputZoneText = page.getInputZoneText();
 		if (inputZoneText.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii atunci se
 																		// poate inlocui textul direct
 
 			File file = fileChooser.showOpenDialog(mainStage);
-			MenuBarEvents.readDOCXFile(file);
+			readDOCXFile(file);
 		}
 
 		else { // in cazul in care exista deja text in TextArea vei fi avertizat ca acesta va
@@ -285,12 +283,12 @@ public class MenuBarEvents {
 			if (result.get() == ButtonType.YES) {
 				System.out.println("OK");
 				File file = fileChooser.showOpenDialog(mainStage);
-				MenuBarEvents.readDOCXFile(file);
+				readDOCXFile(file);
 			}
 		}
 	}
 	
-	public static void readDOCXFile(File file) {
+	public void readDOCXFile(File file) {
 		if (file != null) {
 
 			System.out.println("Ai selectat: " + file.getName());
@@ -326,7 +324,7 @@ public class MenuBarEvents {
 	                    sb.append("\n\n");
 	                }
 					
-					MainPage.setInputZoneText(sb.toString()); // setare text
+					page.setInputZoneText(sb.toString()); // setare text
 					document.close();
 					
 					
@@ -348,18 +346,18 @@ public class MenuBarEvents {
 	}
 	
 	
-	public final static void importXLSXFile(Stage mainStage) {
+	public final void importXLSXFile(Stage mainStage) {
 
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Selectare fisier");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Excel file (.xlsx)", "*.xlsx*"));
 
-		String inputZoneText = MainPage.getInputZoneText();
+		String inputZoneText = page.getInputZoneText();
 		if (inputZoneText.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii atunci se
 																		// poate inlocui textul direct
 
 			File file = fileChooser.showOpenDialog(mainStage);
-			MenuBarEvents.readXLSXFile(file);
+			readXLSXFile(file);
 		}
 
 		else { // in cazul in care exista deja text in TextArea vei fi avertizat ca acesta va
@@ -372,12 +370,12 @@ public class MenuBarEvents {
 			if (result.get() == ButtonType.YES) {
 				System.out.println("OK");
 				File file = fileChooser.showOpenDialog(mainStage);
-				MenuBarEvents.readXLSXFile(file);
+				readXLSXFile(file);
 			}
 		}
 	}
 	
-	public static void readXLSXFile(File file) {
+	public  void readXLSXFile(File file) {
 		if (file != null) {
 
 			System.out.println("Ai selectat: " + file.getName());
@@ -439,7 +437,7 @@ public class MenuBarEvents {
 		                }
 		               
 		            }
-		            MainPage.setInputZoneText(sb.toString());
+		            page.setInputZoneText(sb.toString());
 		            workbook.close();
 		            
 		        } catch (IOException e) {

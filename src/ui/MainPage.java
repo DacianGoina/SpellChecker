@@ -27,6 +27,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class MainPage {
+	
+	protected final Command cmd ;
+	public MainPage(final Command cmd) {
+		this.cmd = cmd;
+	}
+	
+	
 	// GUI objects
 	private Button leftButton = new Button("Left Btn");
 	private Button rightButton = new Button("Right Btn");
@@ -42,15 +49,15 @@ public class MainPage {
 	private int paraIndex;
 	
 	
-	private static TextArea inputZone = new TextArea();
+	private TextArea inputZone = new TextArea();
 	
-	public static Stage mainStage;
+	public Stage mainStage;
 	
-	public static String getInputZoneText() {
+	public String getInputZoneText() {
 		return inputZone.getText();
 	}
 	
-	public static void setInputZoneText(String text) {
+	public void setInputZoneText(String text) {
 		inputZone.setText(text);
 	}
 	
@@ -119,7 +126,7 @@ public class MainPage {
 		root.setCenter(inputZone);
 		root.setRight(rightButton);
 		root.setLeft(leftButton);
-		root.setTop(MenuBarInitializer.getMenuBar());
+		root.setTop(MenuBarInitializer.getMenuBar(this));
 		
 		
 		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, paraInfo);
