@@ -1,5 +1,11 @@
 package ui;
 
+/**
+ * 
+ * @author Dacian
+ *
+ */
+
 public class Command {
 	
 	private MainPage mainPage;

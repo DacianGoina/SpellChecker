@@ -23,12 +23,9 @@ public class MenuBarInitializer {
 	
 	// Meniu pentru aplicatie - optiunile de sus
 	
-	
-	
 	public static MenuBar getMenuBar(final MainPage page) {
 		MenuBar menuBar = new MenuBar();
-		
-		
+			
 		final MenuBarEvents events = new MenuBarEvents(page);
 		
 		// Meniul 1 - Fisier
@@ -81,8 +78,17 @@ public class MenuBarInitializer {
 			events.exportTXTFile(page.mainStage);
 		});
 		
+	
+		//Export ca .docx
+		exportDOCX.setOnAction(e->{
+			events.exportDOCXFile(page.mainStage);
+		});
 		
 		
+		//Export ca excel
+		exportXLSX.setOnAction(e->{
+			events.exportXLSXFile(page.mainStage);
+		});
 		
 		/*VA FI NEVOIE DE CODUL ACESTA DIN EVENT 
 		importDOCX.setOnAction(e->{
@@ -111,14 +117,19 @@ public class MenuBarInitializer {
 		// Meniul 2 - Optiuni
 		Menu options = new Menu("Opțiuni");
 		
-		MenuItem optionsItem1 = new MenuItem("Golire zona text");
-		options.getItems().add(optionsItem1);
+		MenuItem optionsItem1 = new MenuItem("Golire paragraf");
+		MenuItem optionsItem2 = new MenuItem("Goleste toate paragrafele");
+		options.getItems().addAll(optionsItem1, optionsItem2);
 		
 		// Cand dai click pe "Golire zona text"
 		optionsItem1.setOnAction(e->{
-			events.clearInputZone();
+			events.clearParagraph();
 		});
 		
+		
+		optionsItem2.setOnAction(e->{
+			events.clearAllParagraphs();
+		});
 		
 		menuBar.getMenus().add(options);
 		
