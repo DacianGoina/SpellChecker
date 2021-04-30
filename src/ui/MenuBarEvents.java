@@ -24,6 +24,8 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -95,7 +97,7 @@ public class MenuBarEvents {
 		
 		String paraText = page.getInputZoneText(); // get textul din paragraful curent
 		
-		if (paraText.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii albe sterge direct																	
+		if (paraText.trim().replaceAll("\\s+", "").length() == 0) { // in cazul in care sunt doar spatii albe sterge direct																	
 			page.setParaListElem(page.getParaIndex(), "");; // goleste paragraful
 			page.setInputZoneText(page.getParaListElem(page.getParaIndex())); // seteaza textul in inputZone
 		}
@@ -137,7 +139,7 @@ public class MenuBarEvents {
 			// daca toate paragrafele au doar spatii albe atunci se sterg direct
 			for(String i : page.getParaList()) {
 				String paraText = i;
-				if (paraText.trim().replaceAll("\\s", "").length() != 0) { // daca cel putin un paragraf contine text, utilizatorul trebuie sa confirme stergerea
+				if (paraText.trim().replaceAll("\\s+", "").length() != 0) { // daca cel putin un paragraf contine text, utilizatorul trebuie sa confirme stergerea
 					
 					Alert alert = AlertDialogFactory.createAlertConfirmation(AlertType.CONFIRMATION, "Da", "Nu",
 							"Golire paragrafe", "Este sigur ca vrei sa stergi tot textul?", false, false);
@@ -172,7 +174,7 @@ public class MenuBarEvents {
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text file (.txt)", "*.txt*"));
 		
 		String text = getAllText();
-		if (text.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii atunci se poate inlocui textul direct
+		if (text.trim().replaceAll("\\s+", "").length() == 0) { // in cazul in care sunt doar spatii atunci se poate inlocui textul direct
 			File file = fileChooser.showOpenDialog(mainStage);
 			readTXTFile(file);
 		}
@@ -300,7 +302,7 @@ public class MenuBarEvents {
 		page.setParaListElem(page.getParaIndex(),page.getInputZoneText()); // salveaza modificarile facute pe text in paragraful curent
 		String fileContent = getAllText();
 
-		if (fileContent.trim().replace("\\s", "").length() == 0) { // sunt doar spatii libere in fileContent si nu merita sa salvezi
+		if (fileContent.trim().replace("\\s+", "").length() == 0) { // sunt doar spatii libere in fileContent si nu merita sa salvezi
 			Alert a = AlertDialogFactory.createAlertInformation("Eroare", "Nu exista text care poate fi salvat");
 			a.show();
 		}
@@ -400,7 +402,7 @@ public class MenuBarEvents {
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Word file (.docx)", "*.docx*"));
 
 		String text = getAllText();
-		if (text.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii atunci se
+		if (text.trim().replaceAll("\\s+", "").length() == 0) { // in cazul in care sunt doar spatii atunci se
 																		// poate inlocui textul direct
 
 			File file = fileChooser.showOpenDialog(mainStage);
@@ -462,6 +464,21 @@ public class MenuBarEvents {
 					page.initializeParaList();
 					
 					// pune textul din paragrafe in Array pe pozitii corespunzatoare
+					int i = 0;
+					int counter = 0;
+					while(i<paragraphs.size()) {
+						String a = new String(paragraphs.get(i).getText());
+						if(a.trim().replaceAll("\\s+", "").length() != 0) { // daca sunt paragrafe goale nu le adaug
+							if(counter==0)
+								page.setParaListElem(0, paragraphs.get(0).getText());
+							else
+								page.getParaList().add(a);
+							counter++;
+							}
+						i++;
+						}
+						
+					/*
 					for(int i=0;i<paragraphs.size();i++)
 						if(i==0) // deja exista un element String in Array
 							page.setParaListElem(0, paragraphs.get(0).getText());
@@ -470,7 +487,7 @@ public class MenuBarEvents {
 							if(a.trim().replaceAll("\\s", "").length() != 0) // daca sunt paragrafe goale nu le adaug
 								page.getParaList().add(a);
 						}
-					
+					*/
 					if(page.getParaList().size() > 1) // daca avem mai mult de 1 paragraf activeaza butoanele
 						page.enableBottomButtons();
 					
@@ -511,7 +528,7 @@ public class MenuBarEvents {
 		page.setParaListElem(page.getParaIndex(),page.getInputZoneText()); // salveaza modificarile facute pe text in paragraful curent
 		String fileContent = getAllText();
 
-		if (fileContent.trim().replace("\\s", "").length() == 0) { // sunt doar spatii libere in fileContent si nu merita sa salvezi
+		if (fileContent.trim().replace("\\s+", "").length() == 0) { // sunt doar spatii libere in fileContent si nu merita sa salvezi
 			Alert a = AlertDialogFactory.createAlertInformation("Eroare", "Nu exista text care poate fi salvat");
 			a.show();
 		}
@@ -565,7 +582,7 @@ public class MenuBarEvents {
 								int paraDocxCounter = 0; // numara paragrafele efective din fisierul docx, pot fi si paragrafe goale
 								while(paraCounter < page.getParaList().size()) {
 									String a = document.getParagraphs().get(paraDocxCounter).getText();
-									if(a.trim().replace("\\s", "").length() != 0) { // daca paragraful nu e doar spatii goale
+									if(a.trim().replace("\\s+", "").length() != 0) { // daca paragraful nu e doar spatii goale
 										String paraValue = page.getParaListElem(paraCounter);
 										XWPFParagraph newPara = auxDocument.createParagraph();
 										// vezi daca poti rezolva cu stilul - bold, aliniere etc
@@ -649,7 +666,7 @@ public class MenuBarEvents {
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Excel file (.xlsx)", "*.xlsx*"));
 
 		String text = getAllText();
-		if (text.trim().replaceAll("\\s", "").length() == 0) { // in cazul in care sunt doar spatii atunci se importa direct
+		if (text.trim().replaceAll("\\s+", "").length() == 0) { // in cazul in care sunt doar spatii atunci se importa direct
 			File file = fileChooser.showOpenDialog(mainStage);
 			readXLSXFile(file);
 		}
@@ -791,7 +808,7 @@ public class MenuBarEvents {
 		page.setParaListElem(page.getParaIndex(),page.getInputZoneText()); // salveaza modificarile facute pe text in paragraful curent
 		String fileContent = getAllText();
 
-		if (fileContent.trim().replace("\\s", "").length() == 0) { // sunt doar spatii libere in fileContent si nu merita sa salvezi
+		if (fileContent.trim().replace("\\s+", "").length() == 0) { // sunt doar spatii libere in fileContent si nu merita sa salvezi
 			Alert a = AlertDialogFactory.createAlertInformation("Eroare", "Nu exista text care poate fi salvat");
 			a.show();
 		}
@@ -875,4 +892,18 @@ public class MenuBarEvents {
 		}
 	}
 	
+	/**
+	 * <p>Copiere din inputZone pe clipboard
+	 */
+	public void copyToClipboard() {
+		final Clipboard clipboard = Clipboard.getSystemClipboard();
+	    final ClipboardContent content = new ClipboardContent();
+	    content.putString(page.getInputZoneText());
+	    
+	    clipboard.setContent(content);
+	}
+	
+	public void pasteFromClipboard() {
+		
+	}
 }

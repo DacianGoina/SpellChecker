@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -32,6 +33,9 @@ public class MainPage {
 	private Button leftButton = new Button("Left Btn");
 	private Button rightButton = new Button("Right Btn");
 
+	private VBox leftGroup = new VBox();
+	private Button pasteBtn = new Button();
+	private Button copyBtn = new Button();
 	
 	HBox bottomGroup = new HBox();
 	private Button firstParaBtn = new Button("<<");
@@ -109,6 +113,8 @@ public class MainPage {
 		this.rightButton.setVisible(false);
 		
 		
+		// Butoanele pentru navigarea prin paragrafe - bottomGroup
+		
 		// Id-uri pt butoanele ( + text) de jos (pt a le customiza din css)
 		this.firstParaBtn.setId("bb");
 		this.lastParaBtn.setId("bb");
@@ -135,6 +141,20 @@ public class MainPage {
 		HBox.setMargin(lastParaBtn, new Insets(10,0,10,0));
 		HBox.setMargin(paraInfo, new Insets(10,0,10,0));
 		
+		
+		
+		// Butoanele din partea stanga - leftGroup
+		pasteBtn.setId("lb");
+		copyBtn.setId("lb");
+		pasteBtn.setFocusTraversable(false);
+		copyBtn.setFocusTraversable(false);
+		leftGroup.setAlignment(Pos.TOP_CENTER);
+		leftGroup.setId("lg");
+		leftGroup.setSpacing(15);
+		
+		VBox.setMargin(copyBtn,  new Insets(10, 10, 10, 10));
+		VBox.setMargin(pasteBtn,  new Insets(5, 10, 10, 10));
+		
 	}
 	
 	/**
@@ -160,6 +180,10 @@ public class MainPage {
 		//this.firstParaBtn.setDisable(false);
 	}
 	
+	// Setari pentru butoanele din leftGroup
+	public void leftGroupProperties() {
+		
+	}
 	
 	public Scene showMainPage(Stage primaryStage, double windowWidth, double windowHeight) {
 		mainStage = primaryStage; // am nevoie sa il pasez ca argument pentru FileChooser
@@ -169,15 +193,22 @@ public class MainPage {
 		Scene a = new Scene(root, windowWidth, windowHeight);
 		root.setCenter(inputZone);
 		root.setRight(rightButton);
-		root.setLeft(leftButton);
+		//root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
 		
+
+		leftGroup.getChildren().addAll(copyBtn,pasteBtn);
+		root.setLeft(leftGroup);
 		
 		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, paraInfo);
 		root.setBottom(bottomGroup);
 		this.auxiliaryObjectsProperties();
 		this.disableBottomButtons();
 			
+		
+		
+		
+		
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
 		
 	

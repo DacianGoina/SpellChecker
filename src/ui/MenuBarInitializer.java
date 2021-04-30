@@ -110,29 +110,50 @@ public class MenuBarInitializer {
 		*/
 		
 		
-		
 		menuBar.getMenus().add(file);
 		
 		
 		// Meniul 2 - Optiuni
-		Menu options = new Menu("Opțiuni");
+		Menu paragraph = new Menu("Paragraf");
+		MenuItem copyParagraph = new MenuItem("Copiere");
+		MenuItem pasteParagraph = new MenuItem("Lipire");
+		MenuItem clearParagraph = new MenuItem("Golire paragraf");
+		MenuItem clearAllParagraphs = new MenuItem("Goleste toate paragrafele");
+		paragraph.getItems().addAll(copyParagraph, pasteParagraph, clearParagraph, clearAllParagraphs);
 		
-		MenuItem optionsItem1 = new MenuItem("Golire paragraf");
-		MenuItem optionsItem2 = new MenuItem("Goleste toate paragrafele");
-		options.getItems().addAll(optionsItem1, optionsItem2);
 		
-		// Cand dai click pe "Golire zona text"
-		optionsItem1.setOnAction(e->{
+		//Copiere pe clipboard
+		copyParagraph.setOnAction(e->{
+			events.copyToClipboard();
+		});
+		
+		pasteParagraph.setOnAction(e->{
+			events.pasteFromClipboard();
+		});
+		
+		// Golire paragraf
+		clearParagraph.setOnAction(e->{
 			events.clearParagraph();
 		});
 		
-		
-		optionsItem2.setOnAction(e->{
+		// Goleste toate paragrafele
+		clearAllParagraphs.setOnAction(e->{
 			events.clearAllParagraphs();
 		});
 		
-		menuBar.getMenus().add(options);
 		
+		menuBar.getMenus().add(paragraph);
+		
+		
+		// Setare ID-uri pentru meniu si componente (pentru a folosi CSS pe ele)
+		for(Menu i : menuBar.getMenus()) {
+			i.setId("menuHeader");
+			for(MenuItem j : i.getItems())
+				j.setId("menuItem");
+		}
+		
+		
+		menuBar.getStylesheets().add(MenuBarInitializer.class.getResource("style_MainPage.css").toExternalForm());
 		return menuBar;
 	}
 	
