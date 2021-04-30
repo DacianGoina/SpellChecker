@@ -10,11 +10,14 @@ package ui;
 
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -38,6 +41,8 @@ public class MainPage {
 	private Button copyBtn = new Button();
 	
 	HBox bottomGroup = new HBox();
+	private TextField goToParaField = new TextField();
+	private Button goToParaBtn = new Button("Go");
 	private Button firstParaBtn = new Button("<<");
 	private Button prevParaBtn = new Button("<");
 	private Button nextParaBtn = new Button(">");
@@ -120,6 +125,8 @@ public class MainPage {
 		this.lastParaBtn.setId("bb");
 		this.prevParaBtn.setId("bb");
 		this.nextParaBtn.setId("bb");
+		this.goToParaField.setId("bb");
+		this.goToParaBtn.setId("bb");
 		this.paraInfo.setId("paraInfo");
 		
 		// Focus pentru butoane
@@ -127,8 +134,10 @@ public class MainPage {
 		this.lastParaBtn.setFocusTraversable(false);
 		this.prevParaBtn.setFocusTraversable(false);
 		this.nextParaBtn.setFocusTraversable(false);
+		this.goToParaField.setFocusTraversable(false);
+		this.goToParaBtn.setFocusTraversable(false);
 		
-		
+		goToParaField.setPrefWidth(80);
 		
 		bottomGroup.setAlignment(Pos.CENTER);
 		bottomGroup.setId("bg");
@@ -140,8 +149,8 @@ public class MainPage {
 		HBox.setMargin(nextParaBtn, new Insets(10,0,10,0));
 		HBox.setMargin(lastParaBtn, new Insets(10,0,10,0));
 		HBox.setMargin(paraInfo, new Insets(10,0,10,0));
-		
-		
+		HBox.setMargin(goToParaField, new Insets(10,0,10,0));
+		HBox.setMargin(goToParaBtn, new Insets(10,0,10,0));
 		
 		// Butoanele din partea stanga - leftGroup
 		pasteBtn.setId("lb");
@@ -166,6 +175,8 @@ public class MainPage {
 		this.prevParaBtn.setDisable(true);
 		this.lastParaBtn.setDisable(true);
 		this.firstParaBtn.setDisable(true);
+		this.goToParaField.setDisable(true);
+		this.goToParaBtn.setDisable(true);
 	}
 	
 	/**
@@ -176,6 +187,8 @@ public class MainPage {
 	public void enableBottomButtons() {
 		this.nextParaBtn.setDisable(false);
 		this.lastParaBtn.setDisable(false);
+		this.goToParaField.setDisable(false);
+		this.goToParaBtn.setDisable(false);
 		//this.prevParaBtn.setDisable(false);
 		//this.firstParaBtn.setDisable(false);
 	}
@@ -200,7 +213,7 @@ public class MainPage {
 		leftGroup.getChildren().addAll(copyBtn,pasteBtn);
 		root.setLeft(leftGroup);
 		
-		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, paraInfo);
+		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, goToParaField, goToParaBtn, paraInfo);
 		root.setBottom(bottomGroup);
 		this.auxiliaryObjectsProperties();
 		this.disableBottomButtons();
@@ -218,36 +231,78 @@ public class MainPage {
 		
 		
 		
-		//Mouse handle event pentru firstParaBtn - du-te la primul paragraf
+		//Mouse handler event pentru firstParaBtn - du-te la primul paragraf
 		firstParaBtn.setOnMouseClicked(e->{
 			firstParaBtnHandler();
 		});
 		
-		//Mouse handle event pentru nextParaBtn - du-te la urmatorul paragraf
+		//Mouse handler event pentru nextParaBtn - du-te la urmatorul paragraf
 		nextParaBtn.setOnMouseClicked(e->{
 			nextParaBtnHandler();
 		});
 		
 		
-		//Mouse handle event pentru prevParaBtn - du-te la paragraful anterior
+		//Mouse handler event pentru prevParaBtn - du-te la paragraful anterior
 		prevParaBtn.setOnMouseClicked(e->{
 			prevParaBtnHandler();
 		});
 		
-		//Mouse handle event pentru lastParaBtn - du-te la ultimul paragraf
+		//Mouse handler event pentru lastParaBtn - du-te la ultimul paragraf
 		lastParaBtn.setOnMouseClicked(e->{
 			lastParaBtnHandler();
 		});
 
+		// Mouse handler event pentru goToParaBtn - sari la un anumit paragraf
+		goToParaBtn.setOnMouseClicked(e->{
+			goToParaBtnHandler();
+		});
+		
 		a.getStylesheets().add(getClass().getResource("style_MainPage.css").toExternalForm());
 		return a;
 		}
 
+	/**
+	 * <p>Butonul pentru a sari de la un paragraf la altul (non secvential adica), in cazul in care avem multe paragrafe
+	 * am consuma foarte mult timp daca am parcurge secvential doar ca sa ajungem la ultimul paragraf
+	 * <p>Se preia valoarea lui campul goToParaField
+	 * <p>Se verifica daca valoarea preluata este nenula (!= null), daca este o valoarea numerica pozitiva si daca apartine intervalului corespunzator
+	 * astfel incat este index valid pentru un paragraf
+	 * <p>La trecerea spre un alt paragraf se salveaza textul din paragraful curent, se afiseaza in inputZone textul din noul paragraf
+	 * si se inchid / deschid butoanele corespunzatoare (ex. daca merg la ultimul paragraf atunci nu ma mai pot deplasa in fata)
+	 */
+	public void goToParaBtnHandler() {
+		String val = goToParaField.getText();
+		if(val != null) 
+			if(StringUtils.isNumeric(val) == true) {
+				int n = Integer.valueOf(val);
+				if(n >=1 && n <=paraList.size()) {
+					setParaListElem(paraIndex, getInputZoneText());
+					paraIndex = n-1;
+					setInputZoneText(getParaListElem(paraIndex));
+					setParaInfo();
+					
+					prevParaBtn.setDisable(false);
+					firstParaBtn.setDisable(false);
+					lastParaBtn.setDisable(false);
+					nextParaBtn.setDisable(false);
+					
+					if(paraIndex == 0) {
+						prevParaBtn.setDisable(true);
+						firstParaBtn.setDisable(true);
+					}
+					if(paraIndex == paraList.size() - 1) {
+						nextParaBtn.setDisable(true);
+						lastParaBtn.setDisable(true);
+					}
+				}
+			}
+				
+	}
 
 	public void firstParaBtnHandler() {
 		setParaListElem(paraIndex,getInputZoneText()); // updateaza text in paragraful curent
 		paraIndex = 0;
-		paraInfo.setText("Paragraful " + (paraIndex+1) + " / " + paraList.size());
+		setParaInfo();
 		setInputZoneText(getParaListElem(paraIndex));
 		prevParaBtn.setDisable(true);
 		firstParaBtn.setDisable(true);
@@ -263,7 +318,7 @@ public class MainPage {
 			lastParaBtn.setDisable(true);
 		}
 		setInputZoneText(getParaListElem(paraIndex));
-		paraInfo.setText("Paragraful " + (paraIndex+1) + " / " + paraList.size());
+		setParaInfo();
 		firstParaBtn.setDisable(false);
 		prevParaBtn.setDisable(false);
 	}
@@ -275,7 +330,7 @@ public class MainPage {
 			prevParaBtn.setDisable(true);
 			firstParaBtn.setDisable(true);
 		}
-		paraInfo.setText("Paragraful " + (paraIndex+1) + " / " + paraList.size());
+		setParaInfo();
 		setInputZoneText(getParaListElem(paraIndex));
 		nextParaBtn.setDisable(false);
 		lastParaBtn.setDisable(false);
@@ -284,7 +339,7 @@ public class MainPage {
 	public void lastParaBtnHandler() {
 		setParaListElem(paraIndex,getInputZoneText());
 		paraIndex = paraList.size() - 1;
-		paraInfo.setText("Paragraful " + (paraIndex+1) + " / " + paraList.size());
+		setParaInfo();
 		setInputZoneText(getParaListElem(paraIndex));
 		nextParaBtn.setDisable(true);
 		lastParaBtn.setDisable(true);
@@ -303,7 +358,7 @@ public class MainPage {
 	}
 	
 	public void setParaInfo() {
-		paraInfo.setText("Paragraful " + (paraIndex+1) + " / " + paraList.size());
+		paraInfo.setText("Paragraful " + paraIndexInfoDisplay() + " / " + paraList.size());
 	}
 
 	public ArrayList<String> getParaList() {
@@ -350,5 +405,29 @@ public class MainPage {
 		return this.isDocxOpen;
 	}
 	
-
+	/**
+	 * <p>Se foloseste pentru ca afisarea numarului paragrafului sa arate bine si sa nu se shifteze
+	 * <p>Daca de exemplu avem in total 15 paragrafe si suntem la primul, in mod normal se afiseaza "Paragraful 1/15"
+	 * apasam next si tot mergem prin paragrafe, iar cand ajungem la paragraful 10 textul devine "Paragraful 10/15"
+	 * in acest moment se mai adauga un caracter in String-ul care afiseaza si "misca layout-ul"
+	 * adica butoanele sunt impinse putin mai incolo (nu cu multi pixeli, dar se poate considera totusi o jena)
+	 * cu aceasta metoda construim un mod de afisare ca sa nu mai impinga layout-ul cand modificam textul
+	 * cu aceasta metoda afiseaza numarului paragrafului va fi sub forma "Paragraful 01/15" in loc de "Paragraful 1/15"
+	 * <p>Metoda calculeaza numarul de zerouri care trebuie puse inaintea numarului de dinainte de slash, si construieste textul respectiv
+	 * ex. avem 1222 de paragrafe si suntem la paragraful 77, se va afisa "Paragraful 0077/1222", adica inaintea lui 77 se pune 2 zerouri
+	 * @return
+	 */
+	public String paraIndexInfoDisplay() {
+		String rez = "";
+		int a = (int) Math.log10(paraList.size());
+		int b = (int) Math.log10(paraIndex+1);
+		System.out.println("PARA-INDEX-INFO: " + " a = " + a + " b = " + b );
+		int t = a - b;
+		for(int i=1;i<=t;i++)
+			rez = rez + "0";
+		rez = rez + (paraIndex + 1);
+		return rez;
+		
+	}
+	
 }

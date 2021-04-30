@@ -20,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -587,8 +588,9 @@ public class MenuBarEvents {
 									if(a.trim().replace("\\s+", "").length() != 0) { // daca paragraful nu e doar spatii goale
 										String paraValue = page.getParaListElem(paraCounter);
 										XWPFParagraph newPara = auxDocument.createParagraph();
-										// vezi daca poti rezolva cu stilul - bold, aliniere etc
-										newPara.createRun().setText(paraValue);
+										// vezi daca poti rezolva cu stilul - bold, aliniere etc BRUTE FORCE OBIECT PENTRU CU TOATE PROPRIETATILE
+										XWPFRun run = newPara.createRun();
+										run.setText(paraValue);
 										document.setParagraph(newPara, paraDocxCounter);
 										paraCounter++;
 									}
@@ -896,6 +898,7 @@ public class MenuBarEvents {
 	
 	/**
 	 * <p>Copiere din inputZone pe clipboard
+	 * <p>Momentan copiaza ca PlainText
 	 */
 	public void copyToClipboard() {
 		final Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -905,7 +908,26 @@ public class MenuBarEvents {
 	    clipboard.setContent(content);
 	}
 	
+	/**
+	 * <p>Aducere text din clipboard in inputZone si actualizare in paraList
+	 * <p>In cazul in care exista deja text in paragraful curent utilizatorul va trebuie sa confirme ca vrea sa pasteze noul text
+	 */
 	public void pasteFromClipboard() {
-		
+		String content = Clipboard.getSystemClipboard().getString();
+		if(page.getInputZoneText().trim().replaceAll("\\s+", "").length() == 0) { // confirmare utilizator daca exista deja text in paragraful respectiv
+			page.setParaListElem(page.getParaIndex(), content);
+			page.setInputZoneText(content);
+		}
+		else {
+			Alert alert = AlertDialogFactory.createAlertConfirmation(AlertType.CONFIRMATION, "Da", "Nu",
+					"Lipire text", "Este sigur ca vrei sa lipesti noul textul?", false, false);
+
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.YES) { // actiunea care are loc cand apesi butonul "Da" din mesaj(alert)
+				System.out.println("OK");
+				page.setParaListElem(page.getParaIndex(), content);
+				page.setInputZoneText(content);
+			}
+		}
 	}
 }

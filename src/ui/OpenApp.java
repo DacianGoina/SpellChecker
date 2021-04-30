@@ -49,7 +49,7 @@ public class OpenApp {
 				primaryStage.setHeight(windowHeight);
 				//primaryStage.setScene((new MainPage()).showMainPage(primaryStage,windowWidth, windowHeight));
 				primaryStage.setScene(page.showMainPage(primaryStage, windowWidth, windowHeight));
-				primaryStage.setMinWidth(650);
+				primaryStage.setMinWidth(680);
 				primaryStage.setMinHeight(500);
 				primaryStage.show();
 				System.out.println(primaryStage.getWidth() + " " + primaryStage.getHeight());
