@@ -470,10 +470,12 @@ public class MenuBarEvents {
 						String a = new String(paragraphs.get(i).getText());
 						if(a.trim().replaceAll("\\s+", "").length() != 0) { // daca sunt paragrafe goale nu le adaug
 							if(counter==0)
-								page.setParaListElem(0, paragraphs.get(0).getText());
+								page.setParaListElem(0, a);
 							else
 								page.getParaList().add(a);
+							System.out.println("PARAGRAFUL " + counter + ": " + a);
 							counter++;
+							
 							}
 						i++;
 						}
