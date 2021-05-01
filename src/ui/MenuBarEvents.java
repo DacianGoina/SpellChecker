@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFRun.FontCharRange;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -590,6 +591,9 @@ public class MenuBarEvents {
 										XWPFParagraph newPara = auxDocument.createParagraph();
 										// vezi daca poti rezolva cu stilul - bold, aliniere etc BRUTE FORCE OBIECT PENTRU CU TOATE PROPRIETATILE
 										XWPFRun run = newPara.createRun();
+										// INCA NU FUNCTIONEAZA FOARTE BINE COPIEREA DE STILURI - de ex spatiul intre paragrafe;
+										//copyParaRunStyle(document.getParagraphs().get(paraDocxCounter).getRuns().get(0),run);
+										//copyParaStyle(document.getParagraphs().get(paraDocxCounter),newPara); MAI ALES ASTA - FOARTE RAU
 										run.setText(paraValue);
 										document.setParagraph(newPara, paraDocxCounter);
 										paraCounter++;
@@ -929,5 +933,95 @@ public class MenuBarEvents {
 				page.setInputZoneText(content);
 			}
 		}
+	}
+
+	/**
+	 * <p>Pentru a copia stilul (bold, aliniere, italic etc) de la un Run din paragraful original in Run de la un paragraf nou creat
+	 * <p>Stiu nu se poate copie dintr-o bucata (getStyle()), prin urmare trebuie luata pe rand fiecare proprietatie :( BRUTE FORCE
+	 * @param original
+	 * @param nou
+	 */
+	public void copyParaRunStyle(XWPFRun original, XWPFRun nou) {
+		nou.setBold(original.isBold());
+		nou.setCapitalized(original.isCapitalized());
+		nou.setCharacterSpacing(original.getCharacterSpacing());
+		if(original.getColor() != null)
+			nou.setColor(original.getColor());
+		nou.setDoubleStrikethrough(original.isDoubleStrikeThrough());
+		nou.setEmbossed(original.isEmbossed());
+		if(original.getEmphasisMark() != null)
+			nou.setEmphasisMark(original.getEmphasisMark().toString());
+		if(original.getFontFamily() != null)
+			nou.setFontFamily(original.getFontFamily());
+		nou.setFontSize(original.getFontSize());
+		nou.setImprinted(original.isImprinted());
+		nou.setItalic(original.isItalic());
+		nou.setKerning(original.getKerning());
+		if(original.getLang() != null)
+			nou.setLang(original.getLang());
+		nou.setShadow(original.isShadowed());
+		nou.setSmallCaps(original.isSmallCaps());
+		//nou.setStrike(original.isStrike()); //deprecated
+		nou.setStrikeThrough(original.isStrikeThrough());
+		//if(original.getSubscript() != null)
+			//nou.setSubscript(original.getSubscript()); // deprecated
+		if(original.getTextHightlightColor() != null)
+			nou.setTextHighlightColor(original.getTextHightlightColor().toString());
+		nou.setTextPosition(original.getTextPosition());
+		nou.setTextScale(original.getTextScale());
+		if(original.getUnderline() != null)
+			nou.setUnderline(original.getUnderline());
+		if(original.getUnderlineColor() != null)
+			nou.setUnderlineColor(original.getUnderlineColor());
+		if(original.getUnderlineThemeColor() != null)
+			nou.setUnderlineThemeColor(original.getUnderlineThemeColor().toString());
+		nou.setVanish(original.isVanish());
+		if(original.getVerticalAlignment() != null)
+			nou.setVerticalAlignment(original.getVerticalAlignment().toString());
+	}
+	
+	/**
+	 * <p>Asemanator cu copyParaRunStyle, dar aici se copieaza proprietatile care tin de paragraf si nu de Run
+	 * @param original
+	 * @param nou
+	 */
+	public void copyParaStyle(XWPFParagraph original, XWPFParagraph nou) {
+		if(original.getAlignment() != null)
+			nou.setAlignment(original.getAlignment());
+		if(original.getBorderBetween() != null)
+			nou.setBorderBetween(original.getBorderBetween());
+		if(original.getBorderBottom() != null)
+			nou.setBorderBottom(original.getBorderBottom());
+		if(original.getBorderLeft() != null)
+			nou.setBorderLeft(original.getBorderLeft());
+		if(original.getBorderRight() != null)
+			nou.setBorderRight(original.getBorderRight());
+		if(original.getBorderTop() != null)
+			nou.setBorderTop(original.getBorderTop());
+		nou.setFirstLineIndent(original.getFirstLineIndent());
+		nou.setFontAlignment(original.getFontAlignment());
+		nou.setIndentationFirstLine(original.getIndentationFirstLine());
+		nou.setIndentationHanging(original.getIndentationHanging());
+		nou.setIndentationLeft(original.getIndentationLeft());
+		nou.setIndentFromRight(original.getIndentationRight());
+		nou.setIndentFromLeft(original.getIndentFromLeft());
+		nou.setIndentFromRight(original.getIndentFromRight());
+		//nou.setNumID(original.getNumID());
+		nou.setPageBreak(original.isPageBreak());
+		nou.setSpacingAfter(original.getSpacingAfter());
+		nou.setSpacingAfterLines(original.getSpacingAfterLines());
+		nou.setSpacingBefore(original.getSpacingBefore());
+		nou.setSpacingBeforeLines(original.getSpacingBeforeLines());
+		nou.setSpacingBetween(original.getSpacingBetween());
+		if(original.getSpacingLineRule() != null) {
+			nou.setSpacingBetween(original.getSpacingBetween(), original.getSpacingLineRule());
+			nou.setSpacingLineRule(original.getSpacingLineRule());
+		}
+		if(original.getVerticalAlignment() != null)
+			nou.setVerticalAlignment(original.getVerticalAlignment());
+		//nou.setWordWrap(original.isWordWrap()); deprecated
+		//nou.setWordWrapped(original.isWordWrapped());
+		if(original.getStyle() != null)
+			nou.setStyle(original.getStyle());
 	}
 }
