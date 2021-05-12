@@ -37,6 +37,7 @@ public class test {
 
 	public static boolean prefix(String sText1, String sText2) {
 		// sText1 este cuvantul,iar stext2 este potentialul prefix;
+
 		if (sText2.length() <= sText1.length()) {
 			int pozitie = sText2.length();
 			String sText3 = "";
@@ -47,7 +48,6 @@ public class test {
 				return true;
 		}
 		return false;
-
 	}
 
 	public static boolean verific(String lit1, String lit2) {
