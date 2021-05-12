@@ -1,5 +1,6 @@
 package ui;
 
+import db.DB;
 import javafx.stage.Stage;
 /**
  * @author Dacian
@@ -41,7 +42,10 @@ public class OpenApp {
 		
 			final MainPage page = new MainPage(this.cmd);
 			cmd.setMainPage(page);
+			DB db = new DB();
+			cmd.setCuvinte(db.getlistaCuvinte());
 		
+			
 			try {
 				//primaryStage.setResizable(false);
 				primaryStage.setTitle("SpellChecker");

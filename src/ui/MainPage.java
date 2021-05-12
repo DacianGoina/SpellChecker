@@ -208,7 +208,6 @@ public class MainPage {
 		root.setRight(rightButton);
 		//root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
-		
 
 		leftGroup.getChildren().addAll(copyBtn,pasteBtn);
 		root.setLeft(leftGroup);
