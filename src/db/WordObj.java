@@ -1,29 +1,106 @@
 package db;
 
+import java.util.Date;
+/**
+ * 
+ * @author Bica Anamaria
+ *
+ */
 public class WordObj {
 	
+	private int id;
 	private String cuvant;
 	private String tip;
 	private int frecventa;
 	private boolean activ;
 	private boolean adaugat;
+	private String date;
 	
 	
 	public WordObj(String cuvant) {
-		this.cuvant=cuvant;
+		this.id = -1;
+		this.cuvant = cuvant;
 		this.tip = null;
 		this.frecventa = 1;
 		this.activ = true;
 		this.adaugat = true;
+		this.date = null;
 	}
 	
-	public WordObj(String cuvant, String Tip, int frecventa, boolean activ, boolean adaugat) {
-		this.cuvant=cuvant;
-		this.tip = Tip;
-		this.frecventa = 1;
-		this.activ=activ;
-		this.adaugat=adaugat;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (activ ? 1231 : 1237);
+		result = prime * result + (adaugat ? 1231 : 1237);
+		result = prime * result + ((cuvant == null) ? 0 : cuvant.hashCode());
+		result = prime * result + frecventa;
+		result = prime * result + id;
+		result = prime * result + ((tip == null) ? 0 : tip.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WordObj other = (WordObj) obj;
+		if (activ != other.activ)
+			return false;
+		if (adaugat != other.adaugat)
+			return false;
+		if (cuvant == null) {
+			if (other.cuvant != null)
+				return false;
+		} else if (!cuvant.equals(other.cuvant))
+			return false;
+		if (frecventa != other.frecventa)
+			return false;
+		if (id != other.id)
+			return false;
+		if (tip == null) {
+			if (other.tip != null)
+				return false;
+		} else if (!tip.equals(other.tip))
+			return false;
+		return true;
+	}
+
+	public WordObj(int id, String cuvant, String tip, int frecventa, boolean activ, boolean adaugat, String date) {
+		this.id = id;
+		this.cuvant = cuvant;
+		this.tip =   tip;
+		this.frecventa = frecventa ;
+		this.activ = activ;
+		this.adaugat = adaugat;
+		this.date = date;
 		
+	}
+	
+	@Override
+	public String toString() {
+		return "WordObj [id=" + id + ", cuvant=" + cuvant + ", tip=" + tip + ", frecventa=" + frecventa + ", activ="
+				+ activ + ", adaugat=" + adaugat + ", date=" + date + "]";
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public String getCuvant() {
