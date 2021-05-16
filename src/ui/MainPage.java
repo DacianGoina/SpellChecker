@@ -94,6 +94,7 @@ public class MainPage {
 	 * Pentru textul din TextArea, imparte (split) pe cuvinte folosind splitPattern
 	 */
 	public void splitText() {
+		System.out.println("-----------------------------------------------------------------");
 		String cuvinte[] = getInputZoneText().trim().split(splitPattern);
 		for(String i : cuvinte) {
 			TreeMap<String,WordObj> dict = cmd.getCuvinte();

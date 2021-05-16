@@ -33,7 +33,9 @@ public class DB {
 	Statement statement = null;
 	ResultSet rs = null;
 	// String pt calea bazei de date
-	static String basePath ="C:/Users/anama/eclipse-workspace/Pb/SpellChecker/dictionar.db";
+	//static String basePath ="C:/Users/anama/eclipse-workspace/Pb/SpellChecker/dictionar.db";
+	//static String basePath ="C:\\Users\\Dacian\\git\\SpellChecker\\dictionar.db";
+	static String basePath = "././dictionar.db";
 	
 	public DB() {
 		
