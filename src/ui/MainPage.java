@@ -9,9 +9,14 @@ package ui;
  */
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+
+import db.WordObj;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -81,6 +86,23 @@ public class MainPage {
 	private ArrayList<String> paraList = new ArrayList<String>();
 	
 	public Stage mainStage;
+	
+	
+	private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
+	
+	/**
+	 * Pentru textul din TextArea, imparte (split) pe cuvinte folosind splitPattern
+	 */
+	public void splitText() {
+		String cuvinte[] = getInputZoneText().trim().split(splitPattern);
+		for(String i : cuvinte) {
+			TreeMap<String,WordObj> dict = cmd.getCuvinte();
+			if(dict.containsKey(i))
+				System.out.println("CUVANT: " + i + " ESTE CORECT");
+			else
+				System.out.println("CUVANT: " + i + " ESTE GRESIT, DAR APROAPE DE " + dict.ceilingKey(i));
+		}
+	}
 	
 	/**
 	 * <p>Restarteaza paragrafele din aplicatie - continutul textului:
@@ -222,7 +244,13 @@ public class MainPage {
 		
 		
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
-		
+		inputZone.textProperty().addListener(new ChangeListener<String>() {
+	        @Override
+	        public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+	            // this will run whenever text is changed
+	        	splitText();
+	        }
+	    });
 	
 		inputZone.setOnMouseClicked(e->{
 			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY());
