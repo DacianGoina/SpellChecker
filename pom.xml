@@ -53,7 +53,21 @@
 	    <artifactId>sqlite-jdbc</artifactId>
 	    <version>3.34.0</version>
 	</dependency>
-
+	
+	<!-- Pentru highlight cu jpheonix   -->
+	<dependency>
+    <groupId>com.jfoenix</groupId>
+    <artifactId>jfoenix</artifactId>
+    <version>8.0.10</version>
+</dependency>
+ 
+ <!-- https://mvnrepository.com/artifact/org.fxmisc.richtext/richtextfx -->
+<dependency>
+    <groupId>org.fxmisc.richtext</groupId>
+    <artifactId>richtextfx</artifactId>
+    <version>0.10.6</version>
+</dependency>
+ 
  
   </dependencies>
 </project>

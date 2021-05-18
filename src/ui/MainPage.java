@@ -9,10 +9,15 @@ package ui;
  */
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.fxmisc.richtext.InlineCssTextArea;
 
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.utils.JFXHighlighter;
 
 import db.WordObj;
 import javafx.beans.value.ChangeListener;
@@ -23,9 +28,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -87,22 +94,41 @@ public class MainPage {
 	
 	public Stage mainStage;
 	
+	private List<JFXHighlighter> list = new LinkedList<>();
 	
-	private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
-	
+	//private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
+	private final String splitPattern = "[\\s,.!?\"()]++";
 	/**
 	 * Pentru textul din TextArea, imparte (split) pe cuvinte folosind splitPattern
 	 */
 	public void splitText() {
+		// incearca sa modifici aici - sa faci lista cu toate highlighters de dinainte
+		// in lista de highlighter vor fi tot atatea elemente cate sunt in cuvinte[]
+		TreeMap<String,WordObj> dict = cmd.getCuvinte();
+		for(JFXHighlighter i : list)
+			i.clear();
+		list.clear();
 		System.out.println("-----------------------------------------------------------------");
 		String cuvinte[] = getInputZoneText().trim().split(splitPattern);
+		
+		
 		for(String i : cuvinte) {
-			TreeMap<String,WordObj> dict = cmd.getCuvinte();
+			
 			if(dict.containsKey(i))
 				System.out.println("CUVANT: " + i + " ESTE CORECT");
-			else
+			else {
 				System.out.println("CUVANT: " + i + " ESTE GRESIT, DAR APROAPE DE " + dict.ceilingKey(i));
+				list.add(new JFXHighlighter());
+				int p = list.size() - 1;
+				list.get(p).setPaint(Color.GREENYELLOW);
+				list.get(p).highlight(inputZone, i);
+				//JFXHighlighter highlighter = new JFXHighlighter();
+				//highlighter.setPaint(Color.YELLOW);
+				//highlighter.highlight(inputZone, i);
+				
+			}
 		}
+		
 	}
 	
 	/**
@@ -241,9 +267,18 @@ public class MainPage {
 		this.disableBottomButtons();
 			
 		
-		
-		
-		
+		// De aici incepe cu RichText
+		/*
+		InlineCssTextArea specialArea = new InlineCssTextArea();
+		String alphabet = "Remember when you were a careless eight year old kid riding a bike with your friends, racing each other around the neighborhood?\nThis is not funny anymo' ";
+        specialArea.deleteText(0,specialArea.getLength());
+        specialArea.appendText(alphabet);
+        specialArea.setPrefWidth(400);
+        specialArea.setPrefHeight(600);
+        specialArea.setWrapText(true);
+        root.setCenter(specialArea);
+		*/
+        
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
 		inputZone.textProperty().addListener(new ChangeListener<String>() {
 	        @Override
@@ -254,8 +289,17 @@ public class MainPage {
 	    });
 	
 		inputZone.setOnMouseClicked(e->{
-			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY());
+			System.out.println("RELATIV LA TEXTAREA: " + e.getSceneX() + " " + e.getSceneY());
+			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY()); // coordonate mouse
+			System.out.println("POZITIA CURSOR: " + inputZone.getCaretPosition()); // pozitia in textarea
+			if (e.getButton() == MouseButton.SECONDARY) {
+				inputZone.positionCaret(10);
+				System.out.println("AI APASAT CLICK DREAPTA");
+				
+	        }
+			
 		});
+		
 		
 		
 		
