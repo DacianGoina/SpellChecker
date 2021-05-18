@@ -19,6 +19,7 @@ import org.fxmisc.richtext.InlineCssTextArea;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.utils.JFXHighlighter;
 
+import db.DB;
 import db.WordObj;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -38,9 +39,11 @@ import javafx.stage.Stage;
 
 public class MainPage {
 	
+	
 	protected final Command cmd ;
 	public MainPage(final Command cmd) {
 		this.cmd = cmd;
+		
 	}
 	
 	
@@ -62,7 +65,7 @@ public class MainPage {
 	private Text paraInfo = new Text();
 	
 	private TextArea inputZone = new TextArea();
-	
+	//private JFXTextArea inputZone = new JFXTextArea();
 	/**
 	 * <p>Indexul se va folosi pentru a naviga prin paragrafe, va indica paragraful curent - la care ne aflam
 	 * <p>Este important pentru a comunica cu lista de paragrafe
@@ -94,6 +97,8 @@ public class MainPage {
 	
 	public Stage mainStage;
 	
+	private TreeMap<String,WordObj> dict = new DB().getlistaCuvinte();
+	
 	private List<JFXHighlighter> list = new LinkedList<>();
 	
 	//private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
@@ -102,20 +107,17 @@ public class MainPage {
 	 * Pentru textul din TextArea, imparte (split) pe cuvinte folosind splitPattern
 	 */
 	public void splitText() {
-		// incearca sa modifici aici - sa faci lista cu toate highlighters de dinainte
-		// in lista de highlighter vor fi tot atatea elemente cate sunt in cuvinte[]
-		TreeMap<String,WordObj> dict = cmd.getCuvinte();
-		for(JFXHighlighter i : list)
-			i.clear();
+		
 		list.clear();
 		System.out.println("-----------------------------------------------------------------");
 		String cuvinte[] = getInputZoneText().trim().split(splitPattern);
 		
-		
+
 		for(String i : cuvinte) {
 			
-			if(dict.containsKey(i))
+			if(dict.containsKey(i)) {
 				System.out.println("CUVANT: " + i + " ESTE CORECT");
+			}
 			else {
 				System.out.println("CUVANT: " + i + " ESTE GRESIT, DAR APROAPE DE " + dict.ceilingKey(i));
 				list.add(new JFXHighlighter());
@@ -124,10 +126,11 @@ public class MainPage {
 				list.get(p).highlight(inputZone, i);
 				//JFXHighlighter highlighter = new JFXHighlighter();
 				//highlighter.setPaint(Color.YELLOW);
-				//highlighter.highlight(inputZone, i);
-				
+				//highlighter.highlight(inputZone, i);				
 			}
-		}
+		}   
+		   
+		
 		
 	}
 	
@@ -266,18 +269,7 @@ public class MainPage {
 		this.auxiliaryObjectsProperties();
 		this.disableBottomButtons();
 			
-		
-		// De aici incepe cu RichText
-		/*
-		InlineCssTextArea specialArea = new InlineCssTextArea();
-		String alphabet = "Remember when you were a careless eight year old kid riding a bike with your friends, racing each other around the neighborhood?\nThis is not funny anymo' ";
-        specialArea.deleteText(0,specialArea.getLength());
-        specialArea.appendText(alphabet);
-        specialArea.setPrefWidth(400);
-        specialArea.setPrefHeight(600);
-        specialArea.setWrapText(true);
-        root.setCenter(specialArea);
-		*/
+	
         
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
 		inputZone.textProperty().addListener(new ChangeListener<String>() {
@@ -287,8 +279,21 @@ public class MainPage {
 	        	splitText();
 	        }
 	    });
+		
+		
+		// Folosind varianta de mai jos Textarea isi pierde focusul
+		
+		/*
+		inputZone.textProperty().addListener((observable, oldValue, newValue) -> {
+			inputZone.setFocusTraversable(true);
+			inputZone.requestFocus();
+			splitText();
+		    //System.out.println("textfield changed from " + oldValue + " to " + newValue);
+		});*/
+		
 	
 		inputZone.setOnMouseClicked(e->{
+			//splitText();
 			System.out.println("RELATIV LA TEXTAREA: " + e.getSceneX() + " " + e.getSceneY());
 			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY()); // coordonate mouse
 			System.out.println("POZITIA CURSOR: " + inputZone.getCaretPosition()); // pozitia in textarea
