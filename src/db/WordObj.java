@@ -14,7 +14,7 @@ public class WordObj {
 	private int frecventa;
 	private boolean activ;
 	private boolean adaugat;
-	private Date date;
+	private String date;
 	
 	
 	public WordObj(String cuvant) {
@@ -70,7 +70,7 @@ public class WordObj {
 		return true;
 	}
 
-	public WordObj(int id, String cuvant, String tip, int frecventa, boolean activ, boolean adaugat, Date date) {
+	public WordObj(int id, String cuvant, String tip, int frecventa, boolean activ, boolean adaugat, String date) {
 		this.id = id;
 		this.cuvant = cuvant;
 		this.tip =   tip;
@@ -81,8 +81,6 @@ public class WordObj {
 		
 	}
 	
-	
-
 	@Override
 	public String toString() {
 		return "WordObj [id=" + id + ", cuvant=" + cuvant + ", tip=" + tip + ", frecventa=" + frecventa + ", activ="
@@ -97,11 +95,11 @@ public class WordObj {
 		this.id = id;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 
@@ -132,7 +130,7 @@ public class WordObj {
 	public boolean isActiv() {
 		return activ;
 	}
-	
+
 	public void setActiv(boolean activ) {
 		this.activ = activ;
 	}
