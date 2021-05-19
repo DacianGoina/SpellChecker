@@ -6,7 +6,25 @@
 	-fx-font-family: "Georgia";
 	
 }
-
+#codeArea{
+	-fx-font-size:18px;
+	-fx-background-color: white, white;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+    -fx-border-color: black;
+    
+}
+.spell-error {
+    /*-fx-effect: dropshadow(gaussian, red, 2, 0, 0, 0);*/
+    -fx-fill:red;
+    -fx-font-size:18px;
+	-fx-background-color: white, white;
+    -fx-background-radius: 2;
+    -fx-border-radius: 2;
+    -fx-border-color: black;
+    
+   
+}
 
 #bb{
 	-fx-font-size:18px;

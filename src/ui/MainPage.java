@@ -9,15 +9,20 @@ package ui;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.fxmisc.flowless.VirtualizedScrollPane;
+import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.InlineCssTextArea;
+import org.fxmisc.richtext.StyledTextArea;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.utils.JFXHighlighter;
+import com.sun.javafx.scene.control.skin.TextAreaSkin;
 
 import db.DB;
 import db.WordObj;
@@ -27,14 +32,20 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 public class MainPage {
@@ -46,6 +57,8 @@ public class MainPage {
 		
 	}
 	
+	
+	SplitAlgs splitAlgs = new SplitAlgs();
 	
 	// GUI objects
 	private Button leftButton = new Button("Left Btn");
@@ -65,7 +78,7 @@ public class MainPage {
 	private Text paraInfo = new Text();
 	
 	private TextArea inputZone = new TextArea();
-	//private JFXTextArea inputZone = new JFXTextArea();
+	
 	/**
 	 * <p>Indexul se va folosi pentru a naviga prin paragrafe, va indica paragraful curent - la care ne aflam
 	 * <p>Este important pentru a comunica cu lista de paragrafe
@@ -96,6 +109,8 @@ public class MainPage {
 	private ArrayList<String> paraList = new ArrayList<String>();
 	
 	public Stage mainStage;
+	private CodeArea codeArea = new CodeArea();
+	//private InlineCssTextArea codeArea = new InlineCssTextArea();
 	
 	private TreeMap<String,WordObj> dict = new DB().getlistaCuvinte();
 	
@@ -245,10 +260,19 @@ public class MainPage {
 		//this.firstParaBtn.setDisable(false);
 	}
 	
-	// Setari pentru butoanele din leftGroup
-	public void leftGroupProperties() {
-		
+	
+	private List<IndexRange> spellCheck(String newText) {
+		if(codeArea.getLength() > 10) {
+			IndexRange a = new IndexRange(0,5); // asta inseamna 0,1,2,3,4  - adica pana la 5-1
+			// deci daca primeste lista de tuple cu ranges, la indicele drept sa mai adaugi unul
+			List<IndexRange> l = new LinkedList<>();
+			l.add(a);
+			System.out.println(a.getStart() + " | " + a .getEnd());
+			return l;
+		}
+		return null;
 	}
+	
 	
 	public Scene showMainPage(Stage primaryStage, double windowWidth, double windowHeight) {
 		mainStage = primaryStage; // am nevoie sa il pasez ca argument pentru FileChooser
@@ -260,9 +284,10 @@ public class MainPage {
 		root.setRight(rightButton);
 		//root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
+		a.getStylesheets().add(getClass().getResource("style_MainPage.css").toExternalForm());
 
-		leftGroup.getChildren().addAll(copyBtn,pasteBtn);
-		root.setLeft(leftGroup);
+		//leftGroup.getChildren().addAll(copyBtn,pasteBtn); // RENUNTAM LA BUTOANELE DE PE STANGA
+		root.setLeft(leftButton); // ACESTA IL PUNEM DOAR AUXILIAR PENTRU A FACE MARGINI LA TEXTAREA
 		
 		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, goToParaField, goToParaBtn, paraInfo);
 		root.setBottom(bottomGroup);
@@ -281,15 +306,76 @@ public class MainPage {
 	    });
 		
 		
-		// Folosind varianta de mai jos Textarea isi pierde focusul
+		
+		// Pentru a testa meniul ///////////////////
+		ContextMenu menu = new ContextMenu();
+		MenuItem ignore = new MenuItem("Ignora");
+		MenuItem addToDict = new MenuItem("Adauga in dictionar");
+		Menu correctionMenu = new Menu("Corectare");
+		MenuItem childMenuItem1 = new MenuItem("A");
+		MenuItem childMenuItem2 = new MenuItem("B");
+		MenuItem childMenuItem3 = new MenuItem("C");
+		
+		correctionMenu.getItems().addAll(childMenuItem1,childMenuItem2,childMenuItem3);
+		menu.getItems().addAll(ignore,addToDict,correctionMenu);
+		
+
+		root.setCenter(new VirtualizedScrollPane<CodeArea>(codeArea));
+		codeArea.setWrapText(true);
+		codeArea.setContextMenu(menu);
+		codeArea.setId("codeArea");
+		codeArea.textProperty().addListener((observable, oldText, newText) -> {
+		    /*List<IndexRange> errors = spellCheck(newText);
+		    System.out.println("TEXT MARCAT!");
+		    if(errors != null)
+		    for(IndexRange error: errors) {
+		    	System.out.println(error.getStart()+ "|"  +  error.getEnd());
+		    	codeArea.setStyleClass(error.getStart(), error.getEnd(), "spell-error");
+		   
+		    }*/
+			System.out.println("-------------------------------------------------");
+			List<List<Integer>> l = splitAlgs.splitString(newText);
+			if(l != null)
+				for(int i=0;i<l.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
+					int begin = l.get(0).get(i);
+					int end = l.get(1).get(i);
+					String cuvant = newText.substring(l.get(0).get(i), l.get(1).get(i));
+					System.out.println(begin + " | " + end + " : " + cuvant + cuvant.length() + " | " + codeArea.getText(begin, end) + codeArea.getText(begin,end).length());
+					if(!dict.containsKey(cuvant))
+						codeArea.setStyleClass(begin, end, "spell-error");
+						
+						
+				}
+			System.out.println("Lungime CodeArea: " + codeArea.getLength());
+		});
+
+		
+		
+		// codeArea.clears(); // sterge textul
 		
 		/*
-		inputZone.textProperty().addListener((observable, oldValue, newValue) -> {
-			inputZone.setFocusTraversable(true);
-			inputZone.requestFocus();
-			splitText();
-		    //System.out.println("textfield changed from " + oldValue + " to " + newValue);
-		});*/
+		codeArea.setOnMouseClicked(e->{
+			System.out.println("Caret: " + codeArea.getCaretPosition() + " Text len: " + codeArea.getLength());
+			//System.out.println("CHAR AT " + codeArea.getCaretPosition() + ": " +  codeArea.getText().charAt(codeArea.getCaretPosition()));
+			System.out.println("TEXT " + codeArea.getText(0, codeArea.getText().length()));
+			//if(codeArea.getLength() > 100)
+				//codeArea.moveTo(50);
+			//System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY()); // coordonate mouse
+			if(e.getButton() == MouseButton.PRIMARY) { // click stanga
+				System.out.println("STANGA | caret: " + codeArea.getCaretPosition());
+			}
+			else if(e.getButton() == MouseButton.SECONDARY) { // click dreapta
+				System.out.println("DREAPTA");
+				TextAreaSkin skin = (TextAreaSkin)codeArea.getSkin();
+				int insertionPoint = skin.getInsertionPoint(e.getX(),  e.getY());
+				codeArea.positionCaret( insertionPoint);
+				
+			}
+		});
+		*/
+		
+	
+		
 		
 	
 		inputZone.setOnMouseClicked(e->{
@@ -334,9 +420,10 @@ public class MainPage {
 			goToParaBtnHandler();
 		});
 		
-		a.getStylesheets().add(getClass().getResource("style_MainPage.css").toExternalForm());
+		
 		return a;
 		}
+
 
 	/**
 	 * <p>Butonul pentru a sari de la un paragraf la altul (non secvential adica), in cazul in care avem multe paragrafe
