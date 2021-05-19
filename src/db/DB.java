@@ -64,7 +64,7 @@ public class DB {
 	}
 	
 	//inserarea unui cuvant in baza de date
-	public void insertCuvantNou(WordObj word) {
+	public void insertCuvantNou(WordObj word) throws SQLException {
 		
 		Connection conn = this.connection();
 		
@@ -73,27 +73,20 @@ public class DB {
 		
 		final LocalDateTime dt = LocalDateTime.now(); 
 		final java.sql.Date sqlDate = java.sql.Date.valueOf(dt.toLocalDate());
-		try {
+		
 			
-			st = conn.prepareStatement(sql);
-			st.setString(1,word.getCuvant());
-			st.setString(2, word.getTip());
-			st.setInt(3, word.getFrecventa());
-			st.setBoolean(4, word.isActiv());
-			st.setBoolean(5, word.isAdaugat());
-			st.setDate(6, sqlDate);
-			st.executeUpdate();
+		st = conn.prepareStatement(sql);
+		st.setString(1,word.getCuvant());
+		st.setString(2, word.getTip());
+		st.setInt(3, word.getFrecventa());
+		st.setBoolean(4, word.isActiv());
+		st.setBoolean(5, word.isAdaugat());
+		st.setDate(6, sqlDate);
+		st.executeUpdate();
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		conn.close();
+		
 		
 		
 	}
@@ -123,39 +116,37 @@ public class DB {
 	}
 	
 	//cautare daca un anumit cuvant exista in baza de date
-	public WordObj cautareCuvant(String cuvant) {
+	public WordObj cautareCuvant(String cuvant) throws SQLException {
 		
 		Connection conn = this.connection();
 		String sql = "Select * from dictionar where cuvant = ?"; 
 		WordObj obj = null;
 		
-		try {
+	
 			
-			st =  conn.prepareStatement(sql);
-			st.setString(1, cuvant);
-			rs = st.executeQuery();
-			if(rs.next()) {
+		st =  conn.prepareStatement(sql);
+		st.setString(1, cuvant);
+		rs = st.executeQuery();
+		if(rs.next()) {
 				
-				int id = rs.getInt("ID");
-				String cuv = rs.getString("CUVANT");
-				String tip = rs.getString("TIP");
-				int frecventa = rs.getInt("FRECVENTA");
-				boolean activ = rs.getBoolean("ACTIV");
-				boolean adaugat = rs.getBoolean("ADAUGAT");
-				Date date = rs.getDate("DATA_ADAUGARII");
+			int id = rs.getInt("ID");
+			String cuv = rs.getString("CUVANT");
+			String tip = rs.getString("TIP");
+			int frecventa = rs.getInt("FRECVENTA");
+			boolean activ = rs.getBoolean("ACTIV");
+			boolean adaugat = rs.getBoolean("ADAUGAT");
+			Date date = rs.getDate("DATA_ADAUGARII");
 				
-				obj = new WordObj(id,cuv,tip,frecventa,activ,adaugat,date);
+			obj = new WordObj(id,cuv,tip,frecventa,activ,adaugat,date);
 				
 			}
-			conn.close();
-			return obj;
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		return null;
+		conn.close();
+		return obj;
+			
+		
+		
+		
 		
 	}
 	
@@ -192,7 +183,7 @@ public class DB {
 	
 	
 	//cresterea frecventei unui cuvant daca acesta apare de mai multe ori
-	public void crestereFrecventa(String cuvant) {
+	public void crestereFrecventa(String cuvant) throws SQLException {
 		
 		
 		String update ="UPDATE DICTIONAR SET FRECVENTA=? WHERE CUVANT =?";
@@ -206,44 +197,34 @@ public class DB {
 		int frecv1 ;
 		frecv1 = frecv + 1;
 		
-	
-		try {
-			
 		st =  conn.prepareStatement(update);
 		st.setInt(1, frecv1);
 		st.setInt(2, id);
 		st.execute();
 		st.close();
+		
 		conn.close();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		
 	}
 	
 	//stergere cuvant = punere flag_activ pe false
-	public void stergereCuvant(final int idCuvant) {
+	public void stergereCuvant(final int idCuvant) throws SQLException {
 		
 		
 		String sql = "UPDATE DICTIONAR SET ACTIV=? WHERE ID =?";
 		
 		Connection conn = this.connection();
 		
-		try {
 														
-			st =  conn.prepareStatement(sql);
-			st.setBoolean(1, false);
-			st.setInt(2, idCuvant);
-			st.execute();
-			conn.close();
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		st =  conn.prepareStatement(sql);
+		st.setBoolean(1, false);
+		st.setInt(2, idCuvant);
+		st.execute();
+		
+		
+		conn.close();
 		
 		
 	}
@@ -252,26 +233,19 @@ public class DB {
 	// citire toata baza de date fct -> vector/ treemap 
 	
 	//punere flag_activ = true
-	public void reAdaugareCuvant(final int idCuvant) {
+	public void reAdaugareCuvant(final int idCuvant) throws SQLException {
 		
 		
 		String sql = "UPDATE DICTIONAR SET ACTIV=? WHERE ID =?";
 		
 		Connection conn = this.connection();
-		
-		
-		try {
 			
-			st =  conn.prepareStatement(sql);
-			st.setBoolean(1, true);
-			st.setInt(2, idCuvant);
-			st.execute();
-			conn.close();
+		st =  conn.prepareStatement(sql);
+		st.setBoolean(1, true);
+		st.setInt(2, idCuvant);
+		st.execute();
 			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		conn.close();
 	}
 	
 	public void adaugareCuvinte(final Vector<WordObj> vCuvinte) {
@@ -296,7 +270,7 @@ public class DB {
 		
 	}
 	
-	public TreeMap<String, WordObj> getlistaCuvinte(){
+public TreeMap<String, WordObj> getlistaCuvinte(){
 		
 		Connection conn = this.connection();
 		
@@ -333,9 +307,5 @@ public class DB {
 		
 	}
 	
-	public String [] lista() {
-		return null;
-		
+	
 	}
- 
-}
