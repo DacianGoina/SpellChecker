@@ -10,6 +10,7 @@ package ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -19,6 +20,7 @@ import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.StyledTextArea;
+import org.fxmisc.richtext.model.Paragraph;
 
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.utils.JFXHighlighter;
@@ -177,7 +179,7 @@ public class MainPage {
 		inputZone.setWrapText(true); // pentru a face afisare textului pe mai multe linii in care este linie continua si nu incape toate
 		// ajuta mult mai ales la fisiere docx unde un paragraf este pus pe linie continua (fara newline in el)
 		
-		
+		//
 		this.initializeParaList();
 		
 		
@@ -325,6 +327,10 @@ public class MainPage {
 		codeArea.setContextMenu(menu);
 		codeArea.setId("codeArea");
 		codeArea.textProperty().addListener((observable, oldText, newText) -> {
+			System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
+			
+			codeArea.clearStyle(0, codeArea.getLength());
+			
 		    /*List<IndexRange> errors = spellCheck(newText);
 		    System.out.println("TEXT MARCAT!");
 		    if(errors != null)

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class SplitAlgs {
 		
-	public char[] separatori = new char[] {' ', ',', '?', '!', '\n'};  
+	public char[] separatori = new char[] {' ', '.' , ',', '?', '!', '\n'};  
 	
 	// Primeste un char, verifica daca este separator
 	// Daca este separator returneaza false, altfel returneaza true
