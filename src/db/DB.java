@@ -33,8 +33,7 @@ public class DB {
 	Statement statement = null;
 	ResultSet rs = null;
 	// String pt calea bazei de date
-	//static String basePath ="C:/Users/anama/eclipse-workspace/Pb/SpellChecker/dictionar.db";
-	static String basePath = "././dictionar.db";
+	static String basePath ="././dictionar.db";
 	
 	public DB() {
 		
@@ -48,8 +47,7 @@ public class DB {
 		Connection conn =null;
 		String sql = "org.sqlite.JDBC";
 		String path ="jdbc:sqlite:" + basePath;
-		//string static
-		//constructor clasa db cu String parametru, daca nu e cu cel harcodat deja + comentariu pt string
+		
 		try {
 			Class.forName(sql);
 			conn = DriverManager.getConnection(path);
@@ -60,35 +58,27 @@ public class DB {
 		
 		return conn;
 		
-		
 	}
 	
-	//inserarea unui cuvant in baza de date
-	// Clasa care sa tina toti membrii - parametrii, ex nume: wordObj,eventual data ca parametru separat
+	// inserarea unui cuvant in baza de date
 	public void insertCuvantNou(WordObj word) {
 		
 		Connection conn = this.connection();
-		//adaugam id = null
-		//word obj sa contina id
-		String sql = "INSERT INTO DICTIONAR VALUES(?,?,?,?,?,?,?)";
-		String cuv = word.getCuvant();
-		String tip = word.getTip();
-		int frecventa = word.getFrecventa();
-		boolean activ = word.isActiv();
-		boolean adaugat = word.isAdaugat();
 		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-        LocalDateTime now = LocalDateTime.now(); 
-		String date1 = String.valueOf(now);
+		String sql = "INSERT INTO DICTIONAR(CUVANT,TIP,FRECVENTA,ACTIV,ADAUGAT,DATA_ADAUGARII) VALUES(?,?,?,?,?,?)";
+		
+		final LocalDateTime dt = LocalDateTime.now(); 
+		final java.sql.Date sqlDate = java.sql.Date.valueOf(dt.toLocalDate());
+		String date1 = String.valueOf(sqlDate);
 		try {
 			
 			st = conn.prepareStatement(sql);
-			st.setString(2,cuv);
-			st.setString(3, tip);
-			st.setInt(4, frecventa);
-			st.setBoolean(5, activ);
-			st.setBoolean(6, adaugat);
-			st.setString(7, date1);
+			st.setString(1,word.getCuvant());
+			st.setString(2, word.getTip());
+			st.setInt(3, word.getFrecventa());
+			st.setBoolean(4, word.isActiv());
+			st.setBoolean(5, word.isAdaugat());
+			st.setString(6, date1);
 			st.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -134,22 +124,19 @@ public class DB {
 		
 	}
 	
-	//cautare daca un anumit cuvant exista in baza de date
+	// cautare daca un anumit cuvant exista in baza de date
 	public WordObj cautareCuvant(String cuvant) {
 		
 		Connection conn = this.connection();
 		String sql = "Select * from dictionar where cuvant = ?"; 
-		WordObj obj;
-		// cautare directa in baza de date
-		// return wordObj 
-		// verificare dupa id
-		// 2 fct una cu String, una cu wordObj, cautarea cu baza de date
+		WordObj obj = null;
+		
 		try {
 			
 			st =  conn.prepareStatement(sql);
 			st.setString(1, cuvant);
 			rs = st.executeQuery();
-			while(rs.next()) {
+			if(rs.next()) {
 				
 				int id = rs.getInt("ID");
 				String cuv = rs.getString("CUVANT");
@@ -160,8 +147,7 @@ public class DB {
 				String date = rs.getString("DATA_ADAUGARII");
 				
 				obj = new WordObj(id,cuv,tip,frecventa,activ,adaugat,date);
-				conn.close();
-				return obj;
+				
 			}
 			
 		} catch (SQLException e) {
@@ -169,7 +155,14 @@ public class DB {
 			e.printStackTrace();
 		}
 		
-		return null;
+		
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj;
 		
 	}
 	
@@ -206,28 +199,23 @@ public class DB {
 	
 	
 	//cresterea frecventei unui cuvant daca acesta apare de mai multe ori
-	public void crestereFrecventa(String cuvant) {
+	public void crestereFrecventa(final int idCuvant, int frecv) {
 		
 		
 		String update ="UPDATE DICTIONAR SET FRECVENTA=? WHERE ID =?";
 		
-		WordObj obj = cautareCuvant(cuvant);
 		
 		Connection conn = this.connection();
 		
-		int frecv = obj.getFrecventa();
-		int id = obj.getId();
+	
 		int frecv1 ;
 		frecv1 = frecv + 1;
 		
 	
-		try {
-			
-			// wordObj sa modific frecventa sau int frecventa ca parametru
-			
+		try {	
 		st =  conn.prepareStatement(update);
 		st.setInt(1, frecv1);
-		st.setInt(2, id);
+		st.setInt(2, idCuvant);
 		st.execute();
 		st.close();
 		conn.close();
@@ -242,21 +230,25 @@ public class DB {
 	
 	//stergere cuvant = punere flag_activ pe false
 	// folosire functie pentru connection
-	public void stergereCuvant(String cuvant) {
+	public void stergereCuvant(final int idCuvant) {
 		
 		
 		String sql = "UPDATE DICTIONAR SET ACTIV=? WHERE ID =?";
-		WordObj obj = cautareCuvant(cuvant);
+		
 		
 		Connection conn = this.connection();
-		int id = obj.getId(); // word object cu id 
+	
 		try {
-																// de inlocuit cu WHERE ID = ?
-														// in general operatii bazate pe ID
 			st =  conn.prepareStatement(sql);
 			st.setBoolean(1, false);
-			st.setInt(2, id);
+			st.setInt(2, idCuvant);
 			st.execute();
+		} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+		}
+		
+		try {
 			conn.close();
 			
 		} catch (SQLException e) {
@@ -272,20 +264,20 @@ public class DB {
 	
 	//punere flag_activ = true
 	// connection si ID
-	public void reAdaugareCuvant(String cuvant) {
+	public void reAdaugareCuvant(final int idCuvant) {
 		
 		
 		String sql = "UPDATE DICTIONAR SET ACTIV=? WHERE ID =?";
-		WordObj obj = cautareCuvant(cuvant);
+		
 		
 		Connection conn = this.connection();
-		int id = obj.getId();
+	
 		
 		try {
 			
 			st =  conn.prepareStatement(sql);
 			st.setBoolean(1, true);
-			st.setInt(2, id);
+			st.setInt(2, idCuvant);
 			st.execute();
 			conn.close();
 			
@@ -295,11 +287,28 @@ public class DB {
 		}
 	}
 	
-	public void adaugareCuvinte() {
-		
-		Connection conn = this.connection();
-		Vector<WordObj> obj = new Vector<>();
-		
+	public void adaugareCuvinte(final Vector<WordObj> vCuvinte) {
+
+			final Connection conn = this.connection();
+
+			final String sql = "Select * from dictionar where ID = ?";
+			try {
+				final PreparedStatement stmt = conn.prepareStatement(sql);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			for(final WordObj word : vCuvinte) {
+
+				if(word.getId() <= -1) {
+
+					// cuvantul e nou: inserezi cuvantul nou;
+				} else {
+
+						// TODO: ne gandim in ce conditii apare aceasta situatie;
+				}
+		}
 	}
 	
 	public TreeMap<String, WordObj> getlistaCuvinte(){
