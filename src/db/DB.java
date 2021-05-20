@@ -201,12 +201,9 @@ public class DB {
 	//cresterea frecventei unui cuvant daca acesta apare de mai multe ori
 	public void crestereFrecventa(final int idCuvant, int frecv) {
 		
-		
 		String update ="UPDATE DICTIONAR SET FRECVENTA=? WHERE ID =?";
 		
-		
 		Connection conn = this.connection();
-		
 	
 		int frecv1 ;
 		frecv1 = frecv + 1;
@@ -291,7 +288,7 @@ public class DB {
 
 			final Connection conn = this.connection();
 
-			final String sql = "Select * from dictionar where ID = ?";
+			final String sql = "INSERT INTO DICTIONAR(CUVANT,TIP,FRECVENTA,ACTIV,ADAUGAT,DATA_ADAUGARII) VALUES(?,?,?,?,?,?)";
 			try {
 				final PreparedStatement stmt = conn.prepareStatement(sql);
 			} catch (SQLException e) {
@@ -304,9 +301,36 @@ public class DB {
 				if(word.getId() <= -1) {
 
 					// cuvantul e nou: inserezi cuvantul nou;
+					final LocalDateTime dt = LocalDateTime.now(); 
+					final java.sql.Date sqlDate = java.sql.Date.valueOf(dt.toLocalDate());
+					String date = String.valueOf(sqlDate);
+					
+					try {
+						st.setString(1,word.getCuvant());
+						st.setString(2, word.getTip());
+						st.setInt(3, word.getFrecventa());
+						st.setBoolean(4, word.isActiv());
+						st.setBoolean(5, word.isAdaugat());
+						st.setString(6, date);
+				        st.addBatch();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					
 				} else {
 
 						// TODO: ne gandim in ce conditii apare aceasta situatie;
+					if(gasireCuvant(word) == true) {
+						crestereFrecventa(word.getId(),word.getFrecventa());
+					}
+				}
+				try {
+					int[] affectedRecords = st.executeBatch();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 		}
 	}
@@ -317,7 +341,7 @@ public class DB {
 		
 		TreeMap<String, WordObj> cuvinte = new TreeMap<String,WordObj>();
 		
-		String sql = "Select * from dictionar";
+		String sql = "Select * from dictionar where activ = true";
 		
 		try {
 			
