@@ -340,7 +340,8 @@ public class MainPage {
 		   
 		    }*/
 			System.out.println("-------------------------------------------------");
-			List<List<Integer>> l = splitAlgs.splitString(newText);
+			//List<List<Integer>> l = splitAlgs.splitString(newText);
+			List<List<Integer>> l = splitAlgs.splitString2(newText);
 			if(l != null)
 				for(int i=0;i<l.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
 					int begin = l.get(0).get(i);
@@ -352,9 +353,14 @@ public class MainPage {
 						
 						
 				}
-			System.out.println("Lungime CodeArea: " + codeArea.getLength());
+			//System.out.println("Lungime CodeArea: " + codeArea.getLength());
 		});
 
+		
+		codeArea.setOnMouseClicked(e->{
+			if(e.getButton() == MouseButton.PRIMARY)
+				System.out.println("Caret pos: " + codeArea.getCaretPosition());
+		});
 		
 		
 		// codeArea.clears(); // sterge textul
@@ -379,9 +385,6 @@ public class MainPage {
 			}
 		});
 		*/
-		
-	
-		
 		
 	
 		inputZone.setOnMouseClicked(e->{
