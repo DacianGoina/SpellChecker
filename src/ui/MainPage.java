@@ -62,6 +62,7 @@ public class MainPage {
 	
 	SplitAlgs splitAlgs = new SplitAlgs();
 	
+	
 	// GUI objects
 	private Button leftButton = new Button("Left Btn");
 	private Button rightButton = new Button("Right Btn");
@@ -275,6 +276,10 @@ public class MainPage {
 		return null;
 	}
 	
+	// Foarte important, pentru a selecta cuvantul in urma unui click
+	public int indici[] = new int[] {-1, -1};
+	
+	public RightClickMenuAux rightMenu = new RightClickMenuAux();
 	
 	public Scene showMainPage(Stage primaryStage, double windowWidth, double windowHeight) {
 		mainStage = primaryStage; // am nevoie sa il pasez ca argument pentru FileChooser
@@ -297,6 +302,7 @@ public class MainPage {
 		this.disableBottomButtons();
 			
 	
+		rightMenu.enableClickEvents();
         
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
 		inputZone.textProperty().addListener(new ChangeListener<String>() {
@@ -310,7 +316,7 @@ public class MainPage {
 		
 		
 		// Pentru a testa meniul ///////////////////
-		ContextMenu menu = new ContextMenu();
+		/*ContextMenu menu = new ContextMenu();
 		MenuItem ignore = new MenuItem("Ignora");
 		MenuItem addToDict = new MenuItem("Adauga in dictionar");
 		Menu correctionMenu = new Menu("Corectare");
@@ -319,17 +325,18 @@ public class MainPage {
 		MenuItem childMenuItem3 = new MenuItem("C");
 		
 		correctionMenu.getItems().addAll(childMenuItem1,childMenuItem2,childMenuItem3);
-		menu.getItems().addAll(ignore,addToDict,correctionMenu);
+		menu.getItems().addAll(ignore,addToDict,correctionMenu);*/
 		
 
 		root.setCenter(new VirtualizedScrollPane<CodeArea>(codeArea));
 		codeArea.setWrapText(true);
-		codeArea.setContextMenu(menu);
+		codeArea.setContextMenu(rightMenu.getContextMenu());
 		codeArea.setId("codeArea");
 		codeArea.textProperty().addListener((observable, oldText, newText) -> {
 			System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
 			
 			codeArea.clearStyle(0, codeArea.getLength());
+			
 			
 		    /*List<IndexRange> errors = spellCheck(newText);
 		    System.out.println("TEXT MARCAT!");
@@ -358,8 +365,44 @@ public class MainPage {
 
 		
 		codeArea.setOnMouseClicked(e->{
-			if(e.getButton() == MouseButton.PRIMARY)
+			if(e.getButton() == MouseButton.PRIMARY) { // apasare click STANGA
 				System.out.println("Caret pos: " + codeArea.getCaretPosition());
+				if(indici[0] != -1 && indici[1] != -1) { // sa anulez efectul de gresit clicked pe restul cuvintele, sa am doar un gresit clicked la un moment dat
+					String cuvant = codeArea.getText().substring(indici[0], indici[1]);
+					if(!dict.containsKey(cuvant))
+						codeArea.setStyleClass(indici[0], indici[1], "spell-error"); // daca cuvantul e gresit si clicked altul, fa-l pe asta doar rosu
+					else {
+						codeArea.setStyleClass(indici[0], indici[1], "codeArea"); // daca e corect si clicked altul, fa-l pe asta normal
+					}
+				}
+				int caretPos = codeArea.getCaretPosition();
+				if(caretPos != codeArea.getLength()) { // sa nu fim pe ultima pozitie in text
+					indici = splitAlgs.getIndiciCuvant(codeArea.getText(), codeArea.getCaretPosition());
+					if(indici[0] != -1 && indici[1] != -1) {
+						System.out.println(indici[0] + " | " + indici[1] +" : " + codeArea.getText(indici[0], indici[1]));
+						String cuvant = codeArea.getText().substring(indici[0], indici[1]);
+						if(!dict.containsKey(cuvant)) // daca e gresit si am dat click pe el coloreaza separat
+							codeArea.setStyleClass(indici[0], indici[1], "spell-errorClicked");
+					}
+				}
+			}
+			else if (e.getButton() == MouseButton.SECONDARY) { // apasare click dreapta
+				if(indici[0] != -1 && indici[1] != -1) { // daca avem un cuvant select
+					String cuvant = codeArea.getText().substring(indici[0], indici[1]);
+					if(!dict.containsKey(cuvant)) { // daca acest cuvant selectat este gresit se poate folosi meniul click dreapta
+						rightMenu.enableAll();
+					}
+					
+					else { // daca cuvantul selectat este corect atunci nu pot folosi nimic din click dreapta menu
+						rightMenu.disableAll();
+					}
+						
+				}
+				
+				else { // daca nu avem cuvant selectat atunci nu ai voie sa folosesti nicio optiune de la meniu click dreapta
+					rightMenu.disableAll();
+				}
+			}
 		});
 		
 		

@@ -24,6 +24,7 @@ public class SplitAlgs {
 		return false;
 	}
 	
+	// Complexitatea aproximativ O(k*n), n - numarul de caractere, k - numarul de separatori
 	// Primeste un String si scoate indicii cuvintelor (adica delimitarea)
 	public List<List<Integer>> splitString(String text){
 		List<List<Integer>> l = new LinkedList<>();
@@ -52,6 +53,7 @@ public class SplitAlgs {
 		
 	}
 	
+	// Complexitate apromativ O(n) - n fiind numarul de caractere
 	// Verifica daca un caracter dat este caracter "normal" - daca este litera (a-z, A-Z sau diacritice) ADICA SA NU FIE SEPARATOR
 	// Returneaza true daca este caracter normal, altfel returneaza false
 	// Se poate folosi asta in loc de versiunea de mai sus deoarece majoritatea textelor contine litere, nu separatori
@@ -81,11 +83,12 @@ public class SplitAlgs {
 		l.add(b);
 		
 		int i = 0;
-		while(i < text.length()) { // pana ajunge la capatul textului
-			while(i < text.length() && !isNormalChar(text.charAt(i))) // cand va gasi primul non-separator acolo incepe cuvantul
+		int len = text.length();
+		while(i < len) { // pana ajunge la capatul textului
+			while(i < len && !isNormalChar(text.charAt(i))) // cand va gasi primul non-separator acolo incepe cuvantul
 				i++;
 			int begin = i;
-			while(i < text.length() && isNormalChar(text.charAt(i))) // cand timp nu mai gaseste separator inseamna ca suntem in cuvant
+			while(i < len && isNormalChar(text.charAt(i))) // cand timp nu mai gaseste separator inseamna ca suntem in cuvant
 				i++;
 			
 			int end = i;
@@ -100,23 +103,44 @@ public class SplitAlgs {
 		
 	}
 	
+	public int[] getIndiciCuvant(String text, int pos) {
+		int rez[] = new int[]{-1,-1};
+		if(!isNormalChar(text.charAt(pos))) // daca nu suntem intr-un cuvant nu are rost sa mai cautam
+			return rez;
+		int left = pos;
+		int right = pos;
+		int len = text.length();
+		while(left >=0 && isNormalChar(text.charAt(left))) // deplasare pana la capatul stang al cuvantului
+			left--;
+		while(right < len  && isNormalChar(text.charAt(right))) // deplasare pana la capatul drept al cuvantului
+			right++;
+		rez[0] = left+1;
+		rez[1] = right;
+		return rez;
+		
+	}
+	
 	public static void main(String args[]) {
 		SplitAlgs obj = new SplitAlgs();
 		//System.out.println((int)'ă' + " " +  (int)'â' + " "  + (int)'î' + " " + (int)'ș' + " " + (int)'ț' + " " + (int)'Ș' + " " + (int)'Î' + " " + (int)'Ț' + " " + (int)'Ă' + " " + (int)'Â');
 		
-		String a = "!!!! Acesată și cât mai multe condiții țîră ȘUT     este  \n un \n\n\ntext,,, ";
-		
+		//String a = "!!!! Acesată și cât mai multe condiții țîră ȘUT     este  \n un \n\n\ntext,,, ";
+		String a  = "!!  Acesta este   un   text   \n\n .. cu multe  ??? cuvinte ";
 		// Prima versiune de alg
-		List<List<Integer>> l = obj.splitString(a);
+		/*List<List<Integer>> l = obj.splitString(a);
 		for(int i=0;i<l.get(0).size();i++) // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
 			System.out.println(l.get(0).get(i) + " | " + l.get(1).get(i) + " : " + a.substring(l.get(0).get(i), l.get(1).get(i)));
-		
+		*/
 		// A doua versiune de alg
 		System.out.println("-------------------------------");
 		List<List<Integer>> l1 = obj.splitString2(a);
 		for(int i=0;i<l1.get(0).size();i++) // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
 			System.out.println(l1.get(0).get(i) + " | " + l1.get(1).get(i) + " : " + a.substring(l1.get(0).get(i), l1.get(1).get(i)));
 		
+		int rez[] = obj.getIndiciCuvant(a, a.length()-2);
+		System.out.println(rez[0] + " " + rez[1]);
+		if(rez[0] != -1 && rez[1] != -1)
+			System.out.println(a.substring(rez[0],rez[1]));
 	}
 	
 }
