@@ -113,44 +113,14 @@ public class MainPage {
 	
 	public Stage mainStage;
 	private CodeArea codeArea = new CodeArea();
-	//private InlineCssTextArea codeArea = new InlineCssTextArea();
+	
 	
 	private TreeMap<String,WordObj> dict = new DB().getlistaCuvinte();
 	
-	private List<JFXHighlighter> list = new LinkedList<>();
 	
 	//private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
 	private final String splitPattern = "[\\s,.!?\"()]++";
-	/**
-	 * Pentru textul din TextArea, imparte (split) pe cuvinte folosind splitPattern
-	 */
-	public void splitText() {
-		
-		list.clear();
-		System.out.println("-----------------------------------------------------------------");
-		String cuvinte[] = getInputZoneText().trim().split(splitPattern);
-		
-
-		for(String i : cuvinte) {
-			
-			if(dict.containsKey(i)) {
-				System.out.println("CUVANT: " + i + " ESTE CORECT");
-			}
-			else {
-				System.out.println("CUVANT: " + i + " ESTE GRESIT, DAR APROAPE DE " + dict.ceilingKey(i));
-				list.add(new JFXHighlighter());
-				int p = list.size() - 1;
-				list.get(p).setPaint(Color.GREENYELLOW);
-				list.get(p).highlight(inputZone, i);
-				//JFXHighlighter highlighter = new JFXHighlighter();
-				//highlighter.setPaint(Color.YELLOW);
-				//highlighter.highlight(inputZone, i);				
-			}
-		}   
-		   
-		
-		
-	}
+	
 	
 	/**
 	 * <p>Restarteaza paragrafele din aplicatie - continutul textului:
@@ -259,27 +229,45 @@ public class MainPage {
 		this.lastParaBtn.setDisable(false);
 		this.goToParaField.setDisable(false);
 		this.goToParaBtn.setDisable(false);
-		//this.prevParaBtn.setDisable(false);
-		//this.firstParaBtn.setDisable(false);
 	}
 	
-	
-	private List<IndexRange> spellCheck(String newText) {
-		if(codeArea.getLength() > 10) {
-			IndexRange a = new IndexRange(0,5); // asta inseamna 0,1,2,3,4  - adica pana la 5-1
-			// deci daca primeste lista de tuple cu ranges, la indicele drept sa mai adaugi unul
-			List<IndexRange> l = new LinkedList<>();
-			l.add(a);
-			System.out.println(a.getStart() + " | " + a .getEnd());
-			return l;
-		}
-		return null;
-	}
+
 	
 	// Foarte important, pentru a selecta cuvantul in urma unui click
-	public int indici[] = new int[] {-1, -1};
+	private int indici[] = new int[] {-1, -1};
 	
-	public RightClickMenuAux rightMenu = new RightClickMenuAux();
+	public RightClickMenuAux rightMenu = new RightClickMenuAux(this);
+	
+	private List<List<Integer>> lIndiciCuvinte;
+	
+	// Doar stiluri pentru text
+	public String normalStyle = "codeArea";
+	public String spellErrorStyle = "spell-error";
+	public String spellErrorClickedStyle = "spell-errorClicked";
+	
+	// Get pentru lista de indici - trebuie in RightClickMenu
+	public List<List<Integer>> getLIndiciCuvinte(){
+		return this.lIndiciCuvinte;
+	}
+	
+	// Get pentru dictionar - trebuie in RightClickMenu
+	public TreeMap<String,WordObj> getDict(){
+		return this.dict;
+	}
+	
+	// Get pentru code area - trebuie in RightClickMenu
+	public CodeArea getCodeArea() {
+		return this.codeArea;
+	}
+	
+	public int[] getIndici() {
+		return this.indici;
+	}
+	
+	public void setIndici(int left, int right) {
+		this.indici[0] = left;
+		this.indici[1] = right;
+	}
 	
 	public Scene showMainPage(Stage primaryStage, double windowWidth, double windowHeight) {
 		mainStage = primaryStage; // am nevoie sa il pasez ca argument pentru FileChooser
@@ -289,12 +277,11 @@ public class MainPage {
 		Scene a = new Scene(root, windowWidth, windowHeight);
 		root.setCenter(inputZone);
 		root.setRight(rightButton);
-		//root.setLeft(leftButton);
+		root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
 		a.getStylesheets().add(getClass().getResource("style_MainPage.css").toExternalForm());
 
-		//leftGroup.getChildren().addAll(copyBtn,pasteBtn); // RENUNTAM LA BUTOANELE DE PE STANGA
-		root.setLeft(leftButton); // ACESTA IL PUNEM DOAR AUXILIAR PENTRU A FACE MARGINI LA TEXTAREA
+		
 		
 		bottomGroup.getChildren().addAll(firstParaBtn, prevParaBtn, nextParaBtn, lastParaBtn, goToParaField, goToParaBtn, paraInfo);
 		root.setBottom(bottomGroup);
@@ -302,95 +289,68 @@ public class MainPage {
 		this.disableBottomButtons();
 			
 	
+		// Activare events pentru optiunile din meniul click dreapta
 		rightMenu.enableClickEvents();
+		
         
 		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
-		inputZone.textProperty().addListener(new ChangeListener<String>() {
-	        @Override
-	        public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-	            // this will run whenever text is changed
-	        	splitText();
-	        }
-	    });
+	
 		
-		
-		
-		// Pentru a testa meniul ///////////////////
-		/*ContextMenu menu = new ContextMenu();
-		MenuItem ignore = new MenuItem("Ignora");
-		MenuItem addToDict = new MenuItem("Adauga in dictionar");
-		Menu correctionMenu = new Menu("Corectare");
-		MenuItem childMenuItem1 = new MenuItem("A");
-		MenuItem childMenuItem2 = new MenuItem("B");
-		MenuItem childMenuItem3 = new MenuItem("C");
-		
-		correctionMenu.getItems().addAll(childMenuItem1,childMenuItem2,childMenuItem3);
-		menu.getItems().addAll(ignore,addToDict,correctionMenu);*/
-		
-
+	
 		root.setCenter(new VirtualizedScrollPane<CodeArea>(codeArea));
 		codeArea.setWrapText(true);
 		codeArea.setContextMenu(rightMenu.getContextMenu());
 		codeArea.setId("codeArea");
 		codeArea.textProperty().addListener((observable, oldText, newText) -> {
 			System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
-			
 			codeArea.clearStyle(0, codeArea.getLength());
-			
-			
-		    /*List<IndexRange> errors = spellCheck(newText);
-		    System.out.println("TEXT MARCAT!");
-		    if(errors != null)
-		    for(IndexRange error: errors) {
-		    	System.out.println(error.getStart()+ "|"  +  error.getEnd());
-		    	codeArea.setStyleClass(error.getStart(), error.getEnd(), "spell-error");
-		   
-		    }*/
 			System.out.println("-------------------------------------------------");
 			//List<List<Integer>> l = splitAlgs.splitString(newText);
-			List<List<Integer>> l = splitAlgs.splitString2(newText);
-			if(l != null)
-				for(int i=0;i<l.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
-					int begin = l.get(0).get(i);
-					int end = l.get(1).get(i);
-					String cuvant = newText.substring(l.get(0).get(i), l.get(1).get(i));
+			lIndiciCuvinte = splitAlgs.splitString2(newText);
+			if(lIndiciCuvinte != null)
+				for(int i=0;i<lIndiciCuvinte.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
+					int begin = lIndiciCuvinte.get(0).get(i);
+					int end = lIndiciCuvinte.get(1).get(i);
+					String cuvant = newText.substring(lIndiciCuvinte.get(0).get(i), lIndiciCuvinte.get(1).get(i));
 					System.out.println(begin + " | " + end + " : " + cuvant + cuvant.length() + " | " + codeArea.getText(begin, end) + codeArea.getText(begin,end).length());
 					if(!dict.containsKey(cuvant))
-						codeArea.setStyleClass(begin, end, "spell-error");
-						
-						
+						codeArea.setStyleClass(begin, end, spellErrorStyle);
 				}
-			//System.out.println("Lungime CodeArea: " + codeArea.getLength());
 		});
 
 		
 		codeArea.setOnMouseClicked(e->{
-			if(e.getButton() == MouseButton.PRIMARY) { // apasare click STANGA
+			if(e.getButton() == MouseButton.PRIMARY) { // apasare click STANGA - selectam un cuvant
 				System.out.println("Caret pos: " + codeArea.getCaretPosition());
-				if(indici[0] != -1 && indici[1] != -1) { // sa anulez efectul de gresit clicked pe restul cuvintele, sa am doar un gresit clicked la un moment dat
+				// pentru vechiul cuvant care a fost selectat
+				// !! PROBLEMA ERA CA SE DADEA CLICK PE  CUVANT DIN TEXT MARE, APOI SE STERGEA DIN TEXT, SI INDICII RAMANEAU TOT IN TEXTUL MARE, NU MAI AM CE SA ANULEZ IN CAZUL ACESTA
+				if(indici[0] != -1 && indici[1] != -1 && (indici[0] < codeArea.getLength()) && (indici[1] < codeArea.getLength()) ) { // sa anulez efectul de gresit clicked pe restul cuvintele, sa am doar un gresit clicked la un moment dat
 					String cuvant = codeArea.getText().substring(indici[0], indici[1]);
 					if(!dict.containsKey(cuvant))
-						codeArea.setStyleClass(indici[0], indici[1], "spell-error"); // daca cuvantul e gresit si clicked altul, fa-l pe asta doar rosu
+						codeArea.setStyleClass(indici[0], indici[1], spellErrorStyle); // daca cuvantul e gresit si clicked altul, fa-l pe asta doar rosu
 					else {
-						codeArea.setStyleClass(indici[0], indici[1], "codeArea"); // daca e corect si clicked altul, fa-l pe asta normal
+						codeArea.setStyleClass(indici[0], indici[1], normalStyle); // daca e corect si clicked altul, fa-l pe asta normal
 					}
 				}
-				int caretPos = codeArea.getCaretPosition();
+				// Pentru noul cuvant - cel care se selecteaza de la acest click
+				int caretPos = codeArea.getCaretPosition(); 
 				if(caretPos != codeArea.getLength()) { // sa nu fim pe ultima pozitie in text
 					indici = splitAlgs.getIndiciCuvant(codeArea.getText(), codeArea.getCaretPosition());
 					if(indici[0] != -1 && indici[1] != -1) {
 						System.out.println(indici[0] + " | " + indici[1] +" : " + codeArea.getText(indici[0], indici[1]));
 						String cuvant = codeArea.getText().substring(indici[0], indici[1]);
 						if(!dict.containsKey(cuvant)) // daca e gresit si am dat click pe el coloreaza separat
-							codeArea.setStyleClass(indici[0], indici[1], "spell-errorClicked");
+							codeArea.setStyleClass(indici[0], indici[1], spellErrorClickedStyle);
 					}
 				}
 			}
 			else if (e.getButton() == MouseButton.SECONDARY) { // apasare click dreapta
-				if(indici[0] != -1 && indici[1] != -1) { // daca avem un cuvant select
+				if(indici[0] != -1 && indici[1] != -1  ) { // daca avem un cuvant select  POSIBIL SA FIE NEVOIE SI AICI DE CONDITIA DE MAI SUS, CU LUNGIME CODEAREA
 					String cuvant = codeArea.getText().substring(indici[0], indici[1]);
 					if(!dict.containsKey(cuvant)) { // daca acest cuvant selectat este gresit se poate folosi meniul click dreapta
 						rightMenu.enableAll();
+						rightMenu.setCorrectionOptions(getCorrectionSuggestions(cuvant)); // get optiuni pentru corectare
+						rightMenu.clickEventsCorrectionMenu(); // poate ar trebuie mutat in event cu mouse click
 					}
 					
 					else { // daca cuvantul selectat este corect atunci nu pot folosi nimic din click dreapta menu
@@ -419,13 +379,7 @@ public class MainPage {
 			if(e.getButton() == MouseButton.PRIMARY) { // click stanga
 				System.out.println("STANGA | caret: " + codeArea.getCaretPosition());
 			}
-			else if(e.getButton() == MouseButton.SECONDARY) { // click dreapta
-				System.out.println("DREAPTA");
-				TextAreaSkin skin = (TextAreaSkin)codeArea.getSkin();
-				int insertionPoint = skin.getInsertionPoint(e.getX(),  e.getY());
-				codeArea.positionCaret( insertionPoint);
-				
-			}
+			
 		});
 		*/
 		
@@ -644,6 +598,44 @@ public class MainPage {
 		rez = rez + (paraIndex + 1);
 		return rez;
 		
+	}
+	
+	/**
+	 * SE VA INLOCUI ULTERIOR CAND VA FI FINALIZATA METODA RESPECTIVA - momentan se foloseste asta doar pentru a testa replace-ul
+	 * <p> Primeste un cuvant gresit (@param word) si returneaza o lista de cuvinte apropiate
+	 * Cuvintele din aceasta lista se vor folosi ca sugestii pentru corecta
+	 * Lista va contine 4 cuvinte (sa zicem), in dictionar se merge de 2 ori floor si de 2 ori ceil 
+	 * @return
+	 */
+	public List<String> getCorrectionSuggestions(String word){
+		List<String> rez = new LinkedList<>();
+		String floor1 = dict.lowerKey(word);
+		String floor2 = dict.lowerKey(floor1);
+		
+		String ceil1 = dict.higherKey(word);
+		String ceil2 = dict.higherKey(ceil1);
+		
+		if(floor1 != null)
+			rez.add(floor1);
+		else
+			rez.add("null");
+		
+		if(floor2 != null)
+			rez.add(floor2);
+		else
+			rez.add("null");
+		
+		if(ceil1 != null)
+			rez.add(ceil1);
+		else
+			rez.add("null");
+		
+		if(ceil2 != null)
+			rez.add(ceil2);
+		else
+			rez.add("null");
+		
+		return rez;
 	}
 	
 }
