@@ -80,7 +80,7 @@ public class MainPage {
 	private Button lastParaBtn = new Button(">>");
 	private Text paraInfo = new Text();
 	
-	private TextArea inputZone = new TextArea();
+	//private TextArea inputZone = new TextArea();
 	
 	/**
 	 * <p>Indexul se va folosi pentru a naviga prin paragrafe, va indica paragraful curent - la care ne aflam
@@ -133,6 +133,7 @@ public class MainPage {
 	 */
 	public void initializeParaList() {
 		disableBottomButtons(); // daca avem doar un paragraf atunci nu este nevoie de butoane deoarece nu avem unde naviga
+		setIndici(-1,-1); // reseteaza indecsii
 		this.paraList.clear();
 		String p1 = "";
 		this.paraList.add(p1);
@@ -145,9 +146,9 @@ public class MainPage {
 	 * <p>Seteaza proprietati pentru unele obiecte GUI: seteaza ID-uri (poate folosim la CSS putin pentru design), dezactiveaza focus (albastru nepotrivit)
 	 */
 	public void auxiliaryObjectsProperties() {
-		inputZone.setId("inputZone");
-		inputZone.setFocusTraversable(false);
-		inputZone.setWrapText(true); // pentru a face afisare textului pe mai multe linii in care este linie continua si nu incape toate
+		//inputZone.setId("inputZone");
+		//inputZone.setFocusTraversable(false);
+		//inputZone.setWrapText(true); // pentru a face afisare textului pe mai multe linii in care este linie continua si nu incape toate
 		// ajuta mult mai ales la fisiere docx unde un paragraf este pus pe linie continua (fara newline in el)
 		
 		//
@@ -275,7 +276,7 @@ public class MainPage {
 		//StackPane root = new StackPane();
 		BorderPane root = new BorderPane();
 		Scene a = new Scene(root, windowWidth, windowHeight);
-		root.setCenter(inputZone);
+		//root.setCenter(inputZone);
 		root.setRight(rightButton);
 		root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
@@ -293,7 +294,7 @@ public class MainPage {
 		rightMenu.enableClickEvents();
 		
         
-		inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
+		//inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
 	
 		
 	
@@ -302,6 +303,7 @@ public class MainPage {
 		codeArea.setContextMenu(rightMenu.getContextMenu());
 		codeArea.setId("codeArea");
 		codeArea.textProperty().addListener((observable, oldText, newText) -> {
+			setIndici(-1,-1);
 			System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
 			codeArea.clearStyle(0, codeArea.getLength());
 			System.out.println("-------------------------------------------------");
@@ -367,24 +369,10 @@ public class MainPage {
 		
 		
 		// codeArea.clears(); // sterge textul
-		
-		/*
-		codeArea.setOnMouseClicked(e->{
-			System.out.println("Caret: " + codeArea.getCaretPosition() + " Text len: " + codeArea.getLength());
-			//System.out.println("CHAR AT " + codeArea.getCaretPosition() + ": " +  codeArea.getText().charAt(codeArea.getCaretPosition()));
-			System.out.println("TEXT " + codeArea.getText(0, codeArea.getText().length()));
-			//if(codeArea.getLength() > 100)
-				//codeArea.moveTo(50);
-			//System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY()); // coordonate mouse
-			if(e.getButton() == MouseButton.PRIMARY) { // click stanga
-				System.out.println("STANGA | caret: " + codeArea.getCaretPosition());
-			}
-			
-		});
-		*/
+
 		
 	
-		inputZone.setOnMouseClicked(e->{
+		/*inputZone.setOnMouseClicked(e->{
 			//splitText();
 			System.out.println("RELATIV LA TEXTAREA: " + e.getSceneX() + " " + e.getSceneY());
 			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY()); // coordonate mouse
@@ -395,7 +383,7 @@ public class MainPage {
 				
 	        }
 			
-		});
+		});*/
 		
 		
 		
@@ -519,11 +507,13 @@ public class MainPage {
 	
 	
 	public String getInputZoneText() {
-		return inputZone.getText();
+		return codeArea.getText();
 	}
 	
 	public void setInputZoneText(String text) {
-		inputZone.setText(text);
+		codeArea.clear();
+		setIndici(-1,-1);
+		codeArea.appendText(text);
 		
 	}
 	
