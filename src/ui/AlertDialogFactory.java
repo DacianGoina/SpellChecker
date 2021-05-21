@@ -117,6 +117,34 @@ public class AlertDialogFactory {
 		return alert;
 
 	}
+	
+	// Alert simplu - fara header, fara simbol vizual 
+	// Se foloseste pentru a crea mesaje informative la submeniul Dictionar
+	public static Alert createSimpleAlertInformation(String alertTitle, String alertContent) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.initModality(Modality.APPLICATION_MODAL);
+
+		alert.setTitle(alertTitle);
+		alert.setHeaderText(null);
+		alert.setContentText(alertContent);
+		alert.setGraphic(null);
+		alert.getButtonTypes().clear();
+		alert.getButtonTypes().addAll(ButtonType.YES);
+		
+		DialogPane dialogPane = alert.getDialogPane();
+		dialogPane.setStyle("-fx-font-size: 15px; -fx-font-weight:bold; -fx-font-family: \"Georgia\";");
+		
+
+		Button acceptButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+		acceptButton.setText("OK");
+		acceptButton.setDefaultButton(false);
+		acceptButton.setFocusTraversable(false);
+		acceptButton.setStyle("-fx-font-weight:100;");
+
+		return alert;
+
+	}
+	
 
 	public static TextInputDialog createInputDialog(String dialogTitle, String dialogHeader, String dialogContent) {
 			

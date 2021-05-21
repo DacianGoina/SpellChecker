@@ -145,6 +145,37 @@ public class MenuBarInitializer {
 		menuBar.getMenus().add(paragraph);
 		
 		
+		// Dictionar
+		Menu dict = new Menu("Dicționar");
+		MenuItem checkWord = new MenuItem("Verificare cuvânt"); // daca exista un anumit cuvant
+		MenuItem ignore = new MenuItem("Ignorare cuvânt"); // ignore
+		MenuItem unIgnore = new MenuItem("Eliminare ignorare"); // elimna ignorare
+		MenuItem addToDict = new MenuItem("Adaugare cuvânt"); // adauga in dictionar
+		MenuItem removeFromDict = new MenuItem("Eliminare cuvânt"); // scoate din dictionar - de ex am introdus un cuvant din greseala
+		dict.getItems().addAll(checkWord, ignore, unIgnore, addToDict, removeFromDict);
+		
+		checkWord.setOnAction(e->{
+			events.checkWord();
+		});
+		
+		ignore.setOnAction(e->{
+			events.ignore();
+		});
+		
+		unIgnore.setOnAction(e->{
+			events.unIgnore();
+		});
+		
+		addToDict.setOnAction(e->{
+			events.addToDict();
+		});
+		
+		removeFromDict.setOnAction(e->{
+			events.removeFromDict();
+		});
+		
+		menuBar.getMenus().add(dict);
+		
 		// Setare ID-uri pentru meniu si componente (pentru a folosi CSS pe ele)
 		for(Menu i : menuBar.getMenus()) {
 			i.setId("menuHeader");

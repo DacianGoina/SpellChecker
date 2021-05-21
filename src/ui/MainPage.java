@@ -146,12 +146,6 @@ public class MainPage {
 	 * <p>Seteaza proprietati pentru unele obiecte GUI: seteaza ID-uri (poate folosim la CSS putin pentru design), dezactiveaza focus (albastru nepotrivit)
 	 */
 	public void auxiliaryObjectsProperties() {
-		//inputZone.setId("inputZone");
-		//inputZone.setFocusTraversable(false);
-		//inputZone.setWrapText(true); // pentru a face afisare textului pe mai multe linii in care este linie continua si nu incape toate
-		// ajuta mult mai ales la fisiere docx unde un paragraf este pus pe linie continua (fara newline in el)
-		
-		//
 		this.initializeParaList();
 		
 		
@@ -232,7 +226,6 @@ public class MainPage {
 		this.goToParaBtn.setDisable(false);
 	}
 	
-
 	
 	// Foarte important, pentru a selecta cuvantul in urma unui click
 	private int indici[] = new int[] {-1, -1};
@@ -241,7 +234,7 @@ public class MainPage {
 	
 	private List<List<Integer>> lIndiciCuvinte;
 	
-	// Doar stiluri pentru text
+	// Doar stiluri pentru text - ajunge sa fie publice
 	public String normalStyle = "codeArea";
 	public String spellErrorStyle = "spell-error";
 	public String spellErrorClickedStyle = "spell-errorClicked";
@@ -270,13 +263,35 @@ public class MainPage {
 		this.indici[1] = right;
 	}
 	
+	/**
+	 * <p>Verificarea efectiva a textului, se executa la fiecare modificare in text
+	 * Cuvintele gresite sunt marcate momentan cu rosu
+	 * @param text
+	 */
+	public void spellText(String newText) {
+		setIndici(-1,-1);
+		System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
+		codeArea.clearStyle(0, codeArea.getLength());
+		System.out.println("-------------------------------------------------");
+		//List<List<Integer>> l = splitAlgs.splitString(newText);
+		lIndiciCuvinte = splitAlgs.splitString2(newText);
+		if(lIndiciCuvinte != null)
+			for(int i=0;i<lIndiciCuvinte.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
+				int begin = lIndiciCuvinte.get(0).get(i);
+				int end = lIndiciCuvinte.get(1).get(i);
+				String cuvant = newText.substring(lIndiciCuvinte.get(0).get(i), lIndiciCuvinte.get(1).get(i));
+				System.out.println(begin + " | " + end + " : " + cuvant + cuvant.length() + " | " + codeArea.getText(begin, end) + codeArea.getText(begin,end).length());
+				if(!dict.containsKey(cuvant))
+					codeArea.setStyleClass(begin, end, spellErrorStyle);
+			}
+	}
+	
+	
 	public Scene showMainPage(Stage primaryStage, double windowWidth, double windowHeight) {
 		mainStage = primaryStage; // am nevoie sa il pasez ca argument pentru FileChooser
 		
-		//StackPane root = new StackPane();
 		BorderPane root = new BorderPane();
 		Scene a = new Scene(root, windowWidth, windowHeight);
-		//root.setCenter(inputZone);
 		root.setRight(rightButton);
 		root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
@@ -293,34 +308,17 @@ public class MainPage {
 		// Activare events pentru optiunile din meniul click dreapta
 		rightMenu.enableClickEvents();
 		
-        
-		//inputZone.setContextMenu(RightClickMenu.getRightClickMenu());
-	
-		
-	
+
 		root.setCenter(new VirtualizedScrollPane<CodeArea>(codeArea));
 		codeArea.setWrapText(true);
 		codeArea.setContextMenu(rightMenu.getContextMenu());
 		codeArea.setId("codeArea");
-		codeArea.textProperty().addListener((observable, oldText, newText) -> {
-			setIndici(-1,-1);
-			System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
-			codeArea.clearStyle(0, codeArea.getLength());
-			System.out.println("-------------------------------------------------");
-			//List<List<Integer>> l = splitAlgs.splitString(newText);
-			lIndiciCuvinte = splitAlgs.splitString2(newText);
-			if(lIndiciCuvinte != null)
-				for(int i=0;i<lIndiciCuvinte.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
-					int begin = lIndiciCuvinte.get(0).get(i);
-					int end = lIndiciCuvinte.get(1).get(i);
-					String cuvant = newText.substring(lIndiciCuvinte.get(0).get(i), lIndiciCuvinte.get(1).get(i));
-					System.out.println(begin + " | " + end + " : " + cuvant + cuvant.length() + " | " + codeArea.getText(begin, end) + codeArea.getText(begin,end).length());
-					if(!dict.containsKey(cuvant))
-						codeArea.setStyleClass(begin, end, spellErrorStyle);
-				}
+		codeArea.textProperty().addListener((observable, oldText, newText) -> { // cand se fac modificari la textul din CodeArea
+			spellText(newText);
 		});
 
 		
+		// Click event pe CodeArea - zona de text
 		codeArea.setOnMouseClicked(e->{
 			if(e.getButton() == MouseButton.PRIMARY) { // apasare click STANGA - selectam un cuvant
 				System.out.println("Caret pos: " + codeArea.getCaretPosition());
@@ -367,26 +365,7 @@ public class MainPage {
 			}
 		});
 		
-		
-		// codeArea.clears(); // sterge textul
-
-		
 	
-		/*inputZone.setOnMouseClicked(e->{
-			//splitText();
-			System.out.println("RELATIV LA TEXTAREA: " + e.getSceneX() + " " + e.getSceneY());
-			System.out.println("Coordonate mouse: " + e.getSceneX() + " " + e.getSceneY()); // coordonate mouse
-			System.out.println("POZITIA CURSOR: " + inputZone.getCaretPosition()); // pozitia in textarea
-			if (e.getButton() == MouseButton.SECONDARY) {
-				inputZone.positionCaret(10);
-				System.out.println("AI APASAT CLICK DREAPTA");
-				
-	        }
-			
-		});*/
-		
-		
-		
 		
 		//Mouse handler event pentru firstParaBtn - du-te la primul paragraf
 		firstParaBtn.setOnMouseClicked(e->{

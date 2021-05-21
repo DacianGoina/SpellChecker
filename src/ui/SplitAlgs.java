@@ -120,6 +120,19 @@ public class SplitAlgs {
 		
 	}
 	
+	
+	// Primeste un text si verifica daca acel text este un cuvant normal
+	// Adica contine doar litere mari si mici (deci fara separatori)
+	// Se foloseste de isNormalChar
+	// Returneaza true daca word este cuvant normal, altfel (daca contine cel putin un separator) returneaza false
+	public boolean isNormalWord(String word) {
+		int n = word.length();
+		for(int i=0;i<n;i++)
+			if(isNormalChar(word.charAt(i)) == false)
+				return false;
+		return true;
+	}
+	
 	public static void main(String args[]) {
 		SplitAlgs obj = new SplitAlgs();
 		//System.out.println((int)'ă' + " " +  (int)'â' + " "  + (int)'î' + " " + (int)'ș' + " " + (int)'ț' + " " + (int)'Ș' + " " + (int)'Î' + " " + (int)'Ț' + " " + (int)'Ă' + " " + (int)'Â');

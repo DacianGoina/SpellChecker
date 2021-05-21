@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -935,6 +936,111 @@ public class MenuBarEvents {
 		}
 	}
 
+	/**
+	 * <p> Verifica daca un cuvant dat de utilizator (input) este in dictionar
+	 * Se va verifica daca input-ul utilizatorului este unul valid (sa nu contina spatii sau alti separatori)
+	 */
+	public void checkWord() {
+		TextInputDialog inputfileName = AlertDialogFactory.createInputDialog("Verificare cuvânt", "Preluare input",
+				"Cuvânt: ");
+		Optional<String> result = inputfileName.showAndWait();
+		String rez;
+		try { // asta deoarece poate arunca exceptie in cazul in care se da X la dialog sau se apasa Iesire
+			rez = result.get();
+		}catch(NoSuchElementException e) {
+			return;
+		}
+		
+		if(rez.length() > 0 && page.splitAlgs.isNormalWord(rez) == true) { // input-ul este bun
+			Alert a = null;
+			if(page.getDict().containsKey(rez)) 
+				a = AlertDialogFactory.createSimpleAlertInformation("Verificare cuvânt", "Cuvântul introdus se află în dicționar");
+			else
+				a = AlertDialogFactory.createSimpleAlertInformation("Verificare cuvânt", "Cuvântul introdus nu se află în dicționar");
+			a.show();
+		}
+		else { // input-ul nu este bun
+			Alert a = AlertDialogFactory.createSimpleAlertInformation("Eroare", "Nu ai introdus un cuvânt!");
+			a.show();
+		}
+	
+	}
+	
+	/**
+	 * <p>Ignora un cuvant dat de utlilzator - il scoate din TreeMap dict dar doar local
+	 * Cand deschizi aplicatia il vei avea din nou
+	 * Practic, se poate ignora direct de aia, nu trebuie neaparat sa gasesti cuvantul intr-un anumit text si sa il ignori abia atunci
+	 */
+	public void ignore() {
+		TextInputDialog inputfileName = AlertDialogFactory.createInputDialog("Ignorare cuvânt", "Preluare input",
+				"Cuvânt: ");
+		Optional<String> result = inputfileName.showAndWait();
+		String rez;
+		try { // asta deoarece poate arunca exceptie in cazul in care se da X la dialog sau se apasa Iesire
+			rez = result.get();
+		}catch(NoSuchElementException e) {
+			return;
+		}
+		
+		if(rez.length() > 0 && page.splitAlgs.isNormalWord(rez) == true) { // input-ul este bun
+			Alert a = null;
+			if(page.getDict().containsKey(rez)) //contine cuvantul, deci oricum nu il marcheaza gresit
+				a = AlertDialogFactory.createSimpleAlertInformation("Ignorare cuvânt", "Cuvântul introdus este deja ignorat");
+			else {
+				page.getDict().put(rez, null);
+				page.spellText(page.getInputZoneText()); // verifica din nou textul curent, cuvantul introdus va fi ignorat acum (deci va avea alt stil)
+				a = AlertDialogFactory.createSimpleAlertInformation("Ignorare cuvânt", "Cuvântul introdus va fi ignorat pe viitor");
+			}
+			a.show();
+		}
+		else { // input-ul nu este bun
+			Alert a = AlertDialogFactory.createSimpleAlertInformation("Eroare", "Nu ai introdus un cuvânt!");
+			a.show();
+		}
+		
+	}
+	
+	// Anulare ignorare
+	public void unIgnore() {
+		TextInputDialog inputfileName = AlertDialogFactory.createInputDialog("Eliminare ignorare", "Preluare input",
+				"Cuvânt: ");
+		Optional<String> result = inputfileName.showAndWait();
+		String rez;
+		try { // asta deoarece poate arunca exceptie in cazul in care se da X la dialog sau se apasa Iesire
+			rez = result.get();
+		}catch(NoSuchElementException e) {
+			return;
+		}
+		
+		if(rez.length() > 0 && page.splitAlgs.isNormalWord(rez) == true) { // input-ul este bun
+			Alert a = null;
+			if(page.getDict().containsKey(rez)) { // contine cuvantul, deci il putem scoate din dict, pe viitor nu o sa-l mai ignore
+				page.getDict().remove(rez);
+				page.spellText(page.getInputZoneText());
+				a = AlertDialogFactory.createSimpleAlertInformation("Eliminare ignorare", "Cuvântul introdus nu va mai fi ignorat");
+			}
+			else 
+				a = AlertDialogFactory.createSimpleAlertInformation("Eliminare ignorare", "Cuvântul introdus nu este încă ignorat");
+			
+			a.show();
+		}
+		else { // input-ul nu este bun
+			Alert a = AlertDialogFactory.createSimpleAlertInformation("Eroare", "Nu ai introdus un cuvânt!");
+			a.show();
+		}
+	}
+	
+	// Adauga un anumit cuvant in dictionar - oricand, nu trebuie sa astepti pana gasesti cuvantul in CodeArea
+	public void addToDict() {
+		
+	}
+	
+	//Scoate un cuvant din dictionar - de ex am adaugat din greseala
+	public void removeFromDict() {
+		
+	}
+	
+	
 	/**
 	 * <p>Pentru a copia stilul (bold, aliniere, italic etc) de la un Run din paragraful original in Run de la un paragraf nou creat
 	 * <p>Stiu nu se poate copie dintr-o bucata (getStyle()), prin urmare trebuie luata pe rand fiecare proprietatie :( BRUTE FORCE
