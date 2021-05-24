@@ -199,7 +199,7 @@ public class DB {
 	
 	
 	//cresterea frecventei unui cuvant daca acesta apare de mai multe ori
-	public void crestereFrecventa(final int idCuvant, int frecv) {
+	/*public void crestereFrecventa(final int idCuvant, int frecv) {
 		
 		String update ="UPDATE DICTIONAR SET FRECVENTA=? WHERE ID =?";
 		
@@ -223,7 +223,7 @@ public class DB {
 		}
 		
 		
-	}
+	}*/
 	
 	//stergere cuvant = punere flag_activ pe false
 	// folosire functie pentru connection
@@ -261,7 +261,7 @@ public class DB {
 	
 	//punere flag_activ = true
 	// connection si ID
-	public void reAdaugareCuvant(final int idCuvant) {
+	/*public void reAdaugareCuvant(final int idCuvant) {
 		
 		
 		String sql = "UPDATE DICTIONAR SET ACTIV=? WHERE ID =?";
@@ -282,7 +282,7 @@ public class DB {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	public void adaugareCuvinte(final Vector<WordObj> vCuvinte) {
 
@@ -371,5 +371,103 @@ public class DB {
 		return cuvinte;
 		
 	}
-
+	public void adaugare(String cuvant) {
+			
+			WordObj word = new WordObj(cuvant);
+			
+			Connection conn = this.connection();
+			
+			String sql = "INSERT INTO DICTIONAR(CUVANT,TIP,FRECVENTA,ACTIV,ADAUGAT,DATA_ADAUGARII) VALUES(?,?,?,?,?,?)";
+			
+			final LocalDateTime dt = LocalDateTime.now(); 
+			final java.sql.Date sqlDate = java.sql.Date.valueOf(dt.toLocalDate());
+			String date1 = String.valueOf(sqlDate);
+			if(gasireCuvant(word) == false) {
+			try {
+				
+				st = conn.prepareStatement(sql);
+				st.setString(1,word.getCuvant());
+				st.setString(2, word.getTip());
+				st.setInt(3, word.getFrecventa());
+				st.setBoolean(4, word.isActiv());
+				st.setBoolean(5, word.isAdaugat());
+				st.setString(6, date1);
+				st.executeUpdate();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+			else {
+				WordObj word1 = cautareCuvant(word.getCuvant());
+				crestereFrecventa(word1.getId(),word1.getFrecventa());
+				reAdaugareCuvant(word.getId());
+			}
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		}
+	
+	
+	////////////////////////////////////
+	
+	
+	public void crestereFrecventa(final int idCuvant, int frecv) {
+			
+			String update ="UPDATE DICTIONAR SET FRECVENTA=? WHERE ID =?";
+			
+			Connection conn = this.connection();
+		
+			int frecv1 ;
+			frecv1 = frecv + 1;
+			
+		
+			try {	
+			st =  conn.prepareStatement(update);
+			st.setInt(1, frecv1);
+			st.setInt(2, idCuvant);
+			st.execute();
+			st.close();
+			conn.close();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		}
+	
+	
+	//////////////////////////////////////////
+	
+	public void reAdaugareCuvant(final int idCuvant) {
+			
+			
+			String sql = "UPDATE DICTIONAR SET ACTIV=? WHERE ID =?";
+			
+			
+			Connection conn = this.connection();
+		
+			
+			try {
+				
+				st =  conn.prepareStatement(sql);
+				st.setBoolean(1, true);
+				st.setInt(2, idCuvant);
+				st.execute();
+				conn.close();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	
 }

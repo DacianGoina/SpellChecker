@@ -1,20 +1,25 @@
 package ui;
 
-import java.awt.event.MouseEvent;
+
 import java.util.List;
 
 import db.DB;
 import db.WordObj;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseButton;
+
 
 // Clasa pentru meniu dreapta - apare cand facem click dreapta in CodeArea
 // Momentan folosim clasa asta ca sa nu stricam cealalta clasa (RightClickMenu)
+
+
+//ignoreWord, precum si addToDict de aici sunt accesibile (meniu click dreapta) doar cand cuvantul este gresit
+// Deci aici nu trebuie verificat diferenta dintre ignore si addToDict
+// Ignore - dict.get(key) == null, AddToDict - dict.get(key) != null 
+//(Astea se verifica cand folosim verificareCuvant, ignore / unignore, addToDict, removeFromDict in submeniul Dictionar)
+
 public class RightClickMenuAux {
 	private ContextMenu contextMenu;// = new ContextMenu();
 	private MenuItem ignore; // = new MenuItem("Ignora");
@@ -60,6 +65,8 @@ public class RightClickMenuAux {
 		
 	}
 	
+	
+	
 	// Primeste un cuvant (word) si il va ignora: il adauga in dictionar dar un in baza de date (deci doar local)
 	// Vor fi ignorate toate cuvintele egale cu word (de ex ignoram "aabb" dar intr-un text avem mai multe cuvinte "aabb",
 	// nu le dam ignore la fiecare, ci doar la unul )
@@ -88,7 +95,7 @@ public class RightClickMenuAux {
 	// Toate aparitiile lui "aabb" vor fi corecte, sa nu facem adaugare la fiecare aparitie
 	public void addWordToDict(String word) {
 		WordObj a = new WordObj(word); // creare cuvant nou --- vezi constructor in db.WordObj ---
-		auxDB.insertCuvantNou(a); // adauga in baza de date
+		auxDB.adaugare(word); // adauga in baza de date
 		mainPage.getDict().put(word, a); // adauga in dictionar
 		
 		// Acum se continua ca la ignoreWord() - word este corect deci pune stilul de cuvant corect, reseteaza indicii

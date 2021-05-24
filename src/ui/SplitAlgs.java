@@ -2,6 +2,9 @@ package ui;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
+
+import db.WordObj;
 
 
 
@@ -131,6 +134,54 @@ public class SplitAlgs {
 			if(isNormalChar(word.charAt(i)) == false)
 				return false;
 		return true;
+	}
+	
+	/**
+	 * <p>Primeste un text si un dictionar, foloseste textul primit pentru a construi un nou String,
+	 * acest nou String contine cuvintele din String - ul primit dar sunt corectate (cu lowerKey din dictionar)
+	 * Trebuie sa se pastreze toti separatorii (orice care nu este litere mare/mica sau diacritice) care apar in textul original
+	 * @param text - String de intrare (input)
+	 * @param dict - dictionarul
+	 * @return
+	 */
+	public String textCorrection(String text, TreeMap<String,WordObj> dict) {
+		StringBuilder rez = new StringBuilder();
+		int i=0;
+		int n = text.length();
+		while(i < n) {
+			int beginSep = -1;
+			int endSep = -1;
+			int beginWord = -1;
+			int endWord = -1;
+			
+			beginSep = i;
+			while(i < n && (isNormalChar(text.charAt(i)) == false) )
+				i++;
+			endSep = i;
+			
+			beginWord = i;
+			while(i < n && isNormalChar(text.charAt(i)))
+				i++;
+			endWord = i;
+			
+			if(endSep > beginSep) // am identificat separator
+				rez.append(text.substring(beginSep, endSep));
+			
+			if(endWord > beginWord) { // am identificat cuvant
+				String word = text.substring(beginWord, endWord);
+				if(dict.containsKey(word))
+					rez.append(word);
+				else {
+					String newWord = dict.lowerKey(word); // cel mai apropiat cuvant de cel dat
+					if(newWord != null)
+						rez.append(newWord);
+					else
+						rez.append("null");
+				}
+				
+			}
+		}
+		return rez.toString();
 	}
 	
 	public static void main(String args[]) {

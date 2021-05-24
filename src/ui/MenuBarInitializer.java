@@ -1,12 +1,7 @@
 package ui;
 
-import java.util.LinkedList;
-import java.util.List;
 
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.ContextMenu;
+
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -54,9 +49,8 @@ public class MenuBarInitializer {
 		//adauga submeniuri
 		file.getItems().addAll(importMenu, exportMenu);
 		
-		// Doar pentru a testa chestii momentan
-		
-		
+
+			
 		// Import .txt
 		importTXT.setOnAction(e->{
 			events.importTXTFile(page.mainStage);
@@ -90,24 +84,6 @@ public class MenuBarInitializer {
 			events.exportXLSXFile(page.mainStage);
 		});
 		
-		/*VA FI NEVOIE DE CODUL ACESTA DIN EVENT 
-		importDOCX.setOnAction(e->{
-			List<String> a = new LinkedList<>();
-			a.add("cuvant 5");
-			a.add("cuvant 6");
-			a.add("cuvant 7");
-			a.add("cuvnat 8");
-			RightClickMenu.setCorrectionOptions(a);
-			ObservableList<MenuItem> l = RightClickMenu.correctionMenu.getItems();
-			for(MenuItem i : l)
-				i.setOnAction(new EventHandler<ActionEvent>() {
-				    public void handle(ActionEvent t) {
-				        System.out.println("Ai ales: " + i.getText());
-				    }
-				});
-			
-		});
-		*/
 		
 		
 		menuBar.getMenus().add(file);
@@ -144,6 +120,21 @@ public class MenuBarInitializer {
 		
 		menuBar.getMenus().add(paragraph);
 		
+		// Spelling - pentru corectare pe tot paragraful / toate paragrafele
+		Menu spelling = new Menu("Spelling");
+		MenuItem correctParagraph = new MenuItem("Corectează paragraf"); // daca exista un anumit cuvant
+		MenuItem correctAllParagraphs = new MenuItem("Corectează toate paragrafele"); // ignore
+		spelling.getItems().addAll(correctParagraph, correctAllParagraphs);
+		
+		menuBar.getMenus().add(spelling);
+		
+		correctParagraph.setOnAction(e->{
+			events.correctParagraph();
+		});
+		
+		correctAllParagraphs.setOnAction(e->{
+			events.correctAllParagraphs();
+		});
 		
 		// Dictionar
 		Menu dict = new Menu("Dicționar");

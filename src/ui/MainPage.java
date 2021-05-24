@@ -9,8 +9,6 @@ package ui;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -18,36 +16,21 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.StyledTextArea;
-import org.fxmisc.richtext.model.Paragraph;
 
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.utils.JFXHighlighter;
-import com.sun.javafx.scene.control.skin.TextAreaSkin;
+
+
 
 import db.DB;
 import db.WordObj;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.IndexRange;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 public class MainPage {
@@ -60,16 +43,16 @@ public class MainPage {
 	}
 	
 	
-	SplitAlgs splitAlgs = new SplitAlgs();
+	public SplitAlgs splitAlgs = new SplitAlgs();
 	
 	
 	// GUI objects
 	private Button leftButton = new Button("Left Btn");
 	private Button rightButton = new Button("Right Btn");
 
-	private VBox leftGroup = new VBox();
-	private Button pasteBtn = new Button();
-	private Button copyBtn = new Button();
+	//private VBox leftGroup = new VBox();
+	//private Button pasteBtn = new Button();
+	//private Button copyBtn = new Button();
 	
 	HBox bottomGroup = new HBox();
 	private TextField goToParaField = new TextField();
@@ -119,7 +102,7 @@ public class MainPage {
 	
 	
 	//private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
-	private final String splitPattern = "[\\s,.!?\"()]++";
+	//private final String splitPattern = "[\\s,.!?\"()]++";
 	
 	
 	/**
@@ -188,16 +171,16 @@ public class MainPage {
 		HBox.setMargin(goToParaBtn, new Insets(10,0,10,0));
 		
 		// Butoanele din partea stanga - leftGroup
-		pasteBtn.setId("lb");
-		copyBtn.setId("lb");
-		pasteBtn.setFocusTraversable(false);
-		copyBtn.setFocusTraversable(false);
-		leftGroup.setAlignment(Pos.TOP_CENTER);
-		leftGroup.setId("lg");
-		leftGroup.setSpacing(15);
+		//pasteBtn.setId("lb");
+		//copyBtn.setId("lb");
+		//pasteBtn.setFocusTraversable(false);
+		//copyBtn.setFocusTraversable(false);
+		//leftGroup.setAlignment(Pos.TOP_CENTER);
+		//leftGroup.setId("lg");
+		//leftGroup.setSpacing(15);
 		
-		VBox.setMargin(copyBtn,  new Insets(10, 10, 10, 10));
-		VBox.setMargin(pasteBtn,  new Insets(5, 10, 10, 10));
+		//VBox.setMargin(copyBtn,  new Insets(10, 10, 10, 10));
+		//VBox.setMargin(pasteBtn,  new Insets(5, 10, 10, 10));
 		
 	}
 	
@@ -295,6 +278,7 @@ public class MainPage {
 		root.setRight(rightButton);
 		root.setLeft(leftButton);
 		root.setTop(MenuBarInitializer.getMenuBar(this));
+		root.setId("root");
 		a.getStylesheets().add(getClass().getResource("style_MainPage.css").toExternalForm());
 
 		
@@ -314,6 +298,7 @@ public class MainPage {
 		codeArea.setContextMenu(rightMenu.getContextMenu());
 		codeArea.setId("codeArea");
 		codeArea.textProperty().addListener((observable, oldText, newText) -> { // cand se fac modificari la textul din CodeArea
+			//System.out.println("@@@@@@\n" + splitAlgs.textCorrection(newText, dict) + "\n@@@@@@");
 			spellText(newText);
 		});
 
@@ -324,7 +309,8 @@ public class MainPage {
 				System.out.println("Caret pos: " + codeArea.getCaretPosition());
 				// pentru vechiul cuvant care a fost selectat
 				// !! PROBLEMA ERA CA SE DADEA CLICK PE  CUVANT DIN TEXT MARE, APOI SE STERGEA DIN TEXT, SI INDICII RAMANEAU TOT IN TEXTUL MARE, NU MAI AM CE SA ANULEZ IN CAZUL ACESTA
-				if(indici[0] != -1 && indici[1] != -1 && (indici[0] < codeArea.getLength()) && (indici[1] < codeArea.getLength()) ) { // sa anulez efectul de gresit clicked pe restul cuvintele, sa am doar un gresit clicked la un moment dat
+				if(indici[0] != -1 && indici[1] != -1 ) {
+				//if(indici[0] != -1 && indici[1] != -1 && (indici[0] < codeArea.getLength()) && (indici[1] < codeArea.getLength()) ) { // sa anulez efectul de gresit clicked pe restul cuvintele, sa am doar un gresit clicked la un moment dat
 					String cuvant = codeArea.getText().substring(indici[0], indici[1]);
 					if(!dict.containsKey(cuvant))
 						codeArea.setStyleClass(indici[0], indici[1], spellErrorStyle); // daca cuvantul e gresit si clicked altul, fa-l pe asta doar rosu
