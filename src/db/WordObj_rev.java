@@ -21,7 +21,7 @@ public class WordObj_rev {
 		this.frecventa = 1;
 		this.lungime = lungime;
 		this.activ = true;
-		this.adaugat = false;
+		this.adaugat = true;
 		this.date = null;
 	}
 	
