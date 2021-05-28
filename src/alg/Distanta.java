@@ -11,6 +11,8 @@ public class Distanta{
 	}
 
 	public int getIDistantaDeEditare() {
+		if(IDistantaDeEditare!=0)
+		return IDistantaDeEditare+ICuvantFaraDiacritice/2;
 		return IDistantaDeEditare;
 	}
 

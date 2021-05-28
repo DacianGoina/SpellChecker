@@ -1,7 +1,7 @@
 eclipse.preferences.version=1
-encoding//src/alg/test.java=UTF-8
+encoding//src/alg/Algoritmi.java=UTF-8
 encoding//src/db/ex.java=UTF-8
-encoding//src/dom/DomParserDemo.java=UTF-8
+encoding//src/dom/Parser.java=UTF-8
 encoding//src/ui/AlertDialogFactory.java=UTF-8
 encoding//src/ui/MainPage.java=UTF-8
 encoding//src/ui/MenuBarEvents.java=UTF-8

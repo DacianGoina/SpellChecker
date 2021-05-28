@@ -9,6 +9,7 @@ package ui;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
@@ -17,11 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 
-
-
-
+import alg.ObjSugestie;
+import alg.Sugestie;
 import db.DB;
+import db.DB_reverse;
 import db.WordObj;
+import db.WordObj_rev;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -99,7 +101,7 @@ public class MainPage {
 	
 	
 	private TreeMap<String,WordObj> dict = new DB().getlistaCuvinte();
-	
+	private TreeMap<String,WordObj_rev> dict2 = new DB_reverse().getlistaCuvinte();
 	
 	//private String splitPattern = "\\s+|,|\\!|\\?|\\.|\"\"";
 	//private final String splitPattern = "[\\s,.!?\"()]++";
@@ -563,34 +565,31 @@ public class MainPage {
 	 * @return
 	 */
 	public List<String> getCorrectionSuggestions(String word){
-		List<String> rez = new LinkedList<>();
-		String floor1 = dict.lowerKey(word);
-		String floor2 = dict.lowerKey(floor1);
 		
-		String ceil1 = dict.higherKey(word);
-		String ceil2 = dict.higherKey(ceil1);
+		List<ObjSugestie>lista1=new LinkedList<>();
+		List<String>lista=new LinkedList<>();
+		lista1.addAll(Sugestie.getCorrectionSuggestions(word, dict));
+		lista1.addAll(Sugestie.getCorrectionSuggestions1(reverseIt(word), dict2));
+		Collections.sort(lista1);
+		for(ObjSugestie a:lista1)
+		{
+			if(lista.contains(a.getWord())==false)
+			lista.add(a.getWord());
+			if(lista.size()>4)
+				break;
+		}
 		
-		if(floor1 != null)
-			rez.add(floor1);
-		else
-			rez.add("null");
-		
-		if(floor2 != null)
-			rez.add(floor2);
-		else
-			rez.add("null");
-		
-		if(ceil1 != null)
-			rez.add(ceil1);
-		else
-			rez.add("null");
-		
-		if(ceil2 != null)
-			rez.add(ceil2);
-		else
-			rez.add("null");
-		
-		return rez;
+		return lista;
 	}
 	
+
+	public static String reverseIt(String source) {
+        int i, len = source.length();
+        StringBuilder dest = new StringBuilder(len);
+
+        for (i = (len - 1); i >= 0; i--){
+            dest.append(source.charAt(i));
+        }
+        return dest.toString();
+    }
 }
