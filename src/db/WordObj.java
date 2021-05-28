@@ -16,7 +16,6 @@ public class WordObj {
 	private boolean adaugat;
 	private Date date;
 	
-	
 	public WordObj(String cuvant) {
 		this.id = -1;
 		this.cuvant = cuvant;

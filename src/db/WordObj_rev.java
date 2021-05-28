@@ -23,7 +23,6 @@ public class WordObj_rev {
 		this.activ = true;
 		this.adaugat = false;
 		this.date = null;
-		
 	}
 	
 	public WordObj_rev(int id, String cuvant, String tip, int frecventa, int lungime, boolean activ, boolean adaugat,

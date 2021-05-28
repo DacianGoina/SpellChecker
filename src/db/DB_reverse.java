@@ -42,7 +42,6 @@ public class DB_reverse {
 		}
 		
 		return conn;
-		
 	}
 	
 	public void createTable() {
