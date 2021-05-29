@@ -255,17 +255,16 @@ public class MainPage {
 	 */
 	public void spellText(String newText) {
 		setIndici(-1,-1);
-		System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
+		//System.out.println("NUMAR PARAGRAFE: " + codeArea.getParagraphs().size());
 		codeArea.clearStyle(0, codeArea.getLength());
-		System.out.println("-------------------------------------------------");
-		//List<List<Integer>> l = splitAlgs.splitString(newText);
+		//System.out.println("-------------------------------------------------");
 		lIndiciCuvinte = splitAlgs.splitString2(newText);
 		if(lIndiciCuvinte != null)
 			for(int i=0;i<lIndiciCuvinte.get(0).size();i++) { // l.get(0), l.get(1) au aceeasi lungime - fiecare begin are si end
 				int begin = lIndiciCuvinte.get(0).get(i);
 				int end = lIndiciCuvinte.get(1).get(i);
 				String cuvant = newText.substring(lIndiciCuvinte.get(0).get(i), lIndiciCuvinte.get(1).get(i));
-				System.out.println(begin + " | " + end + " : " + cuvant + cuvant.length() + " | " + codeArea.getText(begin, end) + codeArea.getText(begin,end).length());
+				//System.out.println(begin + " | " + end + " : " + cuvant + cuvant.length() + " | " + codeArea.getText(begin, end) + codeArea.getText(begin,end).length());
 				if(!dict.containsKey(cuvant))
 					codeArea.setStyleClass(begin, end, spellErrorStyle);
 			}
@@ -325,7 +324,7 @@ public class MainPage {
 				if(caretPos != codeArea.getLength()) { // sa nu fim pe ultima pozitie in text
 					indici = splitAlgs.getIndiciCuvant(codeArea.getText(), codeArea.getCaretPosition());
 					if(indici[0] != -1 && indici[1] != -1) {
-						System.out.println(indici[0] + " | " + indici[1] +" : " + codeArea.getText(indici[0], indici[1]));
+						//System.out.println(indici[0] + " | " + indici[1] +" : " + codeArea.getText(indici[0], indici[1]));
 						String cuvant = codeArea.getText().substring(indici[0], indici[1]);
 						if(!dict.containsKey(cuvant)) // daca e gresit si am dat click pe el coloreaza separat
 							codeArea.setStyleClass(indici[0], indici[1], spellErrorClickedStyle);

@@ -32,12 +32,12 @@ public class MenuBarInitializer {
 		
 		
 		// elementele de la submeniuri
-		MenuItem importTXT = new MenuItem("Import .txt");
-		MenuItem importDOCX = new MenuItem("Import .docx");
-		MenuItem importXLSX = new MenuItem("Import .xlsx"); // excel nou
-		MenuItem exportTXT = new MenuItem("Exporteaza ca .txt");
-		MenuItem exportDOCX = new MenuItem("Exporteaza ca .docx");
-		MenuItem exportXLSX = new MenuItem("Exporteaza ca .xlsx"); 
+		MenuItem importTXT = new MenuItem("Import TXT"); // .txt
+		MenuItem importDOCX = new MenuItem("Import Word"); // .docs
+		MenuItem importXLSX = new MenuItem("Import Excel"); // .xlsl -  excel nou
+		MenuItem exportTXT = new MenuItem("Exporteaza ca TXT");
+		MenuItem exportDOCX = new MenuItem("Exporteaza ca Word");
+		MenuItem exportXLSX = new MenuItem("Exporteaza ca Excel"); 
 		
 		
 		
