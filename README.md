@@ -4,21 +4,23 @@ Un spell checker este un program (sau o caracteristica a unui program) folosit p
 
 **Interfața**
 
-
-![1](https://user-images.githubusercontent.com/73591137/124745178-33762a00-df28-11eb-88df-53efc21e0694.jpg)
+![1](https://user-images.githubusercontent.com/73591137/124746489-96b48c00-df29-11eb-8798-fbec6932d2c9.jpg)
 
 **Import text (sau se poate scrie manual)**
 
-![2](https://user-images.githubusercontent.com/73591137/124745259-4c7edb00-df28-11eb-808e-6a766138269b.jpg)
+![2](https://user-images.githubusercontent.com/73591137/124746534-a6cc6b80-df29-11eb-9795-9b4e87a94406.jpg)
 
 **Cuvintele greșite vor fi afișate cu o culoare diferită.**
 
-![3](https://user-images.githubusercontent.com/73591137/124745356-67514f80-df28-11eb-974b-95c9dc6bc373.jpg)
+![3](https://user-images.githubusercontent.com/73591137/124746711-db402780-df29-11eb-8e02-9012e9973177.jpg)
+
 
 **Prin selectarea unui cuvânt greșit se pot efectua diverse acțiuni pe el - cel mai comun este corectarea.**
 
-![4](https://user-images.githubusercontent.com/73591137/124745425-7afcb600-df28-11eb-84ec-55b6320e1a93.jpg)
+![4](https://user-images.githubusercontent.com/73591137/124746724-dda28180-df29-11eb-8b82-93622031841d.jpg)
+
 
 **Alte funcții oferite de aplicație**
 
-![5](https://user-images.githubusercontent.com/73591137/124745615-ada6ae80-df28-11eb-93dd-43c6e54ecfd8.jpg)
+![5](https://user-images.githubusercontent.com/73591137/124746735-e09d7200-df29-11eb-8c59-623723f0cedd.jpg)
+
